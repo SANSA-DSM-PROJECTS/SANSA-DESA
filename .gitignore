@@ -49,3 +49,11 @@
 
 /desa-deployment/desa-terriamap/package-lock.json
 /desa-deployment/desa-terriamap/.nvmrc
+
+/desa-backend-subdomains/.env
+/desa-backend-subdomains/nginx/ssl/
+/desa-backend-subdomains/SSL-sansa.org.za-2026-2027/
+/desa-backend-subdomains/desa-jupyterhub/.env
+/desa-backend-subdomains/desa-jupyterhub/.env.example.env
+/desa-backend-subdomains/desa-jupyterhub/.docker.env
+/desa-backend-subdomains/desa-jupyterhub/datacube.conf

@@ -1,0 +1,83 @@
+{
+  "port": 3001,
+
+  "allowProxyFor": [
+    "sansa.org.za",
+    "githubusercontent.com",
+    "desa.sansa.org.za",
+    "desa-ows.sansa.org.za",
+
+    // NOTE: The following default entries are deprecated and will be removed in a future release. If you rely ony terria proxying to any of these servers, please add them through a custom serverconfig.json. See https://docs.terria.io/guide/getting-started/#customizing-terriamap
+    "nicta.com.au",
+    "gov.au",
+    "csiro.au",
+    "argo.jcommops.org",
+    "www.abc.net.au",
+    "geoserver.aurin.org.au",
+    "mapsengine.google.com",
+    "s3-ap-southeast-2.amazonaws.com",
+    "adelaidecitycouncil.com",
+    "www.dptiapps.com.au",
+    "geoserver-123.aodn.org.au",
+    "geoserver.imos.org.au",
+    "nci.org.au",
+    "static.nationalmap.nicta.com.au",
+    "gov",
+    "gov.uk",
+    "gov.nz",
+    "services.aremi.data61.io"
+  ],
+
+  // terriajs-server's proxy checks the RESOLVED address of every proxy target
+  // against this list (DNS-rebinding protection), independent of allowProxyFor
+  // above. desa-ows.sansa.org.za and the GeoServer host resolve internally to
+  // addresses in 10.150.16.0/24 (the SANSA private network these DESA backend
+  // services run on), so the default "10.0.0.0/8" entry blocked all proxying
+  // to them with "403 IP address is not allowed". This is the same default
+  // list as terriajs-server/serverconfig.json.example, with 10.0.0.0/8
+  // replaced by its complement minus 10.150.16.0/24, so only that specific
+  // subnet is exempted and the rest of the private 10.x range stays blocked.
+  "blacklistedAddresses": [
+    // loopback addresses
+    "127.0.0.0/8",
+    "::1/128",
+    // link local addresses
+    "169.254.0.0/16",
+    "fe80::/10",
+    // private network addresses (10.0.0.0/8 minus 10.150.16.0/24)
+    "10.0.0.0/9",
+    "10.128.0.0/12",
+    "10.144.0.0/14",
+    "10.148.0.0/15",
+    "10.150.0.0/20",
+    "10.150.17.0/24",
+    "10.150.18.0/23",
+    "10.150.20.0/22",
+    "10.150.24.0/21",
+    "10.150.32.0/19",
+    "10.150.64.0/18",
+    "10.150.128.0/17",
+    "10.151.0.0/16",
+    "10.152.0.0/13",
+    "10.160.0.0/11",
+    "10.192.0.0/10",
+    "172.16.0.0/12",
+    "192.168.0.0/16",
+    "fc00::/7",
+    // other
+    "0.0.0.0/8",
+    "100.64.0.0/10",
+    "192.0.0.0/24",
+    "192.0.2.0/24",
+    "198.18.0.0/15",
+    "192.88.99.0/24",
+    "198.51.100.0/24",
+    "203.0.113.0/24",
+    "224.0.0.0/4",
+    "240.0.0.0/4",
+    "255.255.255.255/32",
+    "::/128",
+    "2001:db8::/32",
+    "ff00::/8"
+  ]
+}
