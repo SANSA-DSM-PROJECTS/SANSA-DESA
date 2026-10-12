@@ -9,6 +9,12 @@
 #   docker compose --env-file .env.prod -f docker-compose.prod.yml up -d --build
 # =========================================================================
 
+# Compose project name. Distinct from the dev stack (docker-compose.yml,
+# name: keycloak-auth) so prod containers/volumes/networks never collide with
+# dev when both run on the same host. The prod DB volume is therefore
+# "keycloak-prod_postgres_data", separate from dev's "keycloak-auth_postgres_data".
+name: keycloak-prod
+
 services:
   postgres:
     image: postgres:15.8

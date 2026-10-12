@@ -1,3 +1,10 @@
+# Compose project name. Pins the prefix for container/volume/network names so
+# the dev stack can never collide with the prod stack (docker-compose.prod.yml,
+# name: keycloak-prod) if both ever run on the same host. Kept as "keycloak-auth"
+# (the historical default = directory name) so the existing dev postgres volume
+# "keycloak-auth_postgres_data" is preserved.
+name: keycloak-auth
+
 services:
   postgres:
     image: postgres:15
