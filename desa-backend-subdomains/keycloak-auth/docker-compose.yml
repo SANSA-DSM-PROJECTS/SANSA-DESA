@@ -9,12 +9,12 @@ services:
       - postgres_data:/var/lib/postgresql/data
 
     environment:
-      POSTGRES_DB: keycloak
-      POSTGRES_USER: keycloak
-      POSTGRES_PASSWORD: keycloak
+      POSTGRES_DB: ${KC_DB_NAME}
+      POSTGRES_USER: ${KC_DB_USER}
+      POSTGRES_PASSWORD: ${KC_DB_PASSWORD}
 
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U keycloak -d keycloak"]
+      test: ["CMD-SHELL", "pg_isready -U ${KC_DB_USER} -d ${KC_DB_NAME}"]
       interval: 10s
       timeout: 5s
       retries: 10
@@ -39,10 +39,10 @@ services:
 
     environment:
       KC_DB: postgres
-      KC_DB_URL: jdbc:postgresql://keycloak_postgres:5432/keycloak
-      KC_DB_USERNAME: keycloak
-      KC_DB_PASSWORD: keycloak
-      KC_HOSTNAME: https://dlula-dev.sansa.org.za
+      KC_DB_URL: jdbc:postgresql://keycloak_postgres:5432/${KC_DB_NAME}
+      KC_DB_USERNAME: ${KC_DB_USER}
+      KC_DB_PASSWORD: ${KC_DB_PASSWORD}
+      KC_HOSTNAME: ${KC_HOSTNAME}
       KC_HOSTNAME_STRICT: "true"
       KC_HTTP_ENABLED: "true"
       # Keycloak 26 ignores X-Forwarded-* headers unless this is set. nginx
@@ -53,8 +53,9 @@ services:
 
       # Keycloak 26: replaces KEYCLOAK_ADMIN / KEYCLOAK_ADMIN_PASSWORD.
       # Only used the first time, when the master realm has no admin yet.
-      KC_BOOTSTRAP_ADMIN_USERNAME: admin
-      KC_BOOTSTRAP_ADMIN_PASSWORD: "sansa@2026"
+      # Values come from .env (git-ignored) — see .env.example.
+      KC_BOOTSTRAP_ADMIN_USERNAME: ${KC_BOOTSTRAP_ADMIN_USERNAME}
+      KC_BOOTSTRAP_ADMIN_PASSWORD: ${KC_BOOTSTRAP_ADMIN_PASSWORD}
 
     # Live-mount the custom theme so edits to .ftl/.css/.properties show on a
     # browser refresh (theme caching is disabled above).
