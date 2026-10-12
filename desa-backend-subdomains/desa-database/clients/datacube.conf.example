@@ -1,0 +1,21 @@
+# =============================================================================
+# datacube.conf – pointing ODC at desa-db
+# Replace the old file's [datacube] section with this. Two environments:
+#   default  -> read-only (JupyterHub notebooks, ad-hoc queries)
+#   admin    -> indexing (datacube product add / dataset add)
+# Use the admin env explicitly:  datacube -E admin dataset add ...
+# =============================================================================
+
+[datacube]
+db_hostname: desa-db
+db_port: 5432
+db_database: datacube
+db_username: odc_reader
+db_password: CHANGE_ME
+
+[admin]
+db_hostname: desa-db
+db_port: 5432
+db_database: datacube
+db_username: odc_admin
+db_password: CHANGE_ME

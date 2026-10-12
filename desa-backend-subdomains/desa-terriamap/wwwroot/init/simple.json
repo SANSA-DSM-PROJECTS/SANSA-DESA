@@ -6,6 +6,12 @@
         "west": 16
     },
     "viewerMode": "2d",
+    "corsDomains": [
+        "desadev-ows.sansa.org.za",
+        "desa-ows.sansa.org.za",
+        "desadev-geoserver.sansa.org.za",
+        "desa-geoserver.sansa.org.za"
+    ],
     "catalog": [
         {
             "name": "Water Indices",
@@ -15,7 +21,7 @@
                 {
                     "type": "wms",
                     "name": "Chlorophyll (NDCI)",
-                    "url": "https://desa-ows.sansa.org.za/wms",
+                    "url": "https://desadev-ows.sansa.org.za/wms",
                     "layers": "dst_water_indeces",
                     "styles": "ndci",
                     "opacity": 0.85,
@@ -29,7 +35,7 @@
                 {
                     "type": "wms",
                     "name": "Turbidity (NDTI)",
-                    "url": "https://desa-ows.sansa.org.za/wms",
+                    "url": "https://desadev-ows.sansa.org.za/wms",
                     "layers": "dst_water_indeces",
                     "styles": "ndti",
                     "opacity": 0.85,
@@ -43,7 +49,7 @@
                 {
                     "type": "wms",
                     "name": "Algal Bloom Index (ABI)",
-                    "url": "https://desa-ows.sansa.org.za/wms",
+                    "url": "https://desadev-ows.sansa.org.za/wms",
                     "layers": "dst_water_indeces",
                     "styles": "abi",
                     "opacity": 0.85,
@@ -57,7 +63,7 @@
                 {
                     "type": "wms",
                     "name": "Water extent (AWEI)",
-                    "url": "https://desa-ows.sansa.org.za/wms",
+                    "url": "https://desadev-ows.sansa.org.za/wms",
                     "layers": "dst_water_indeces",
                     "styles": "awei",
                     "opacity": 0.85,
@@ -71,7 +77,7 @@
                 {
                     "type": "wms",
                     "name": "Total Suspended Solids (TSS)",
-                    "url": "https://desa-ows.sansa.org.za/wms",
+                    "url": "https://desadev-ows.sansa.org.za/wms",
                     "layers": "dst_water_indeces",
                     "styles": "tss",
                     "opacity": 0.85,
@@ -85,7 +91,7 @@
                 {
                     "type": "wms",
                     "name": "Total Dissolved Solids (TDS)",
-                    "url": "https://desa-ows.sansa.org.za/wms",
+                    "url": "https://desadev-ows.sansa.org.za/wms",
                     "layers": "dst_water_indeces",
                     "styles": "tds",
                     "opacity": 0.85,
@@ -99,7 +105,7 @@
                 {
                     "type": "wms",
                     "name": "Floating Algae (FAI)",
-                    "url": "https://desa-ows.sansa.org.za/wms",
+                    "url": "https://desadev-ows.sansa.org.za/wms",
                     "layers": "dst_water_indeces",
                     "styles": "fai",
                     "opacity": 0.85,
@@ -124,7 +130,7 @@
                         {
                             "type": "wms",
                             "name": "Landsat 9 - True colour (RGB)",
-                            "url": "https://desa-ows.sansa.org.za/wms",
+                            "url": "https://desadev-ows.sansa.org.za/wms",
                             "layers": "ls9_sr",
                             "styles": "simple_rgb",
                             "opacity": 1.0
@@ -132,7 +138,7 @@
                         {
                             "type": "wms",
                             "name": "Landsat 9 - False colour (SWIR/NIR/Green)",
-                            "url": "https://desa-ows.sansa.org.za/wms",
+                            "url": "https://desadev-ows.sansa.org.za/wms",
                             "layers": "ls9_sr",
                             "styles": "infrared_green",
                             "opacity": 1.0
@@ -140,7 +146,7 @@
                         {
                             "type": "wms",
                             "name": "Landsat 9 - NDVI (vegetation)",
-                            "url": "https://desa-ows.sansa.org.za/wms",
+                            "url": "https://desadev-ows.sansa.org.za/wms",
                             "layers": "ls9_sr",
                             "styles": "ndvi",
                             "opacity": 0.85
@@ -148,7 +154,7 @@
                         {
                             "type": "wms",
                             "name": "Landsat 9 - NDWI (water)",
-                            "url": "https://desa-ows.sansa.org.za/wms",
+                            "url": "https://desadev-ows.sansa.org.za/wms",
                             "layers": "ls9_sr",
                             "styles": "ndwi",
                             "opacity": 0.85
@@ -156,7 +162,7 @@
                         {
                             "type": "wms",
                             "name": "Landsat 9 - MNDWI (modified water)",
-                            "url": "https://desa-ows.sansa.org.za/wms",
+                            "url": "https://desadev-ows.sansa.org.za/wms",
                             "layers": "ls9_sr",
                             "styles": "mndwi",
                             "opacity": 0.85
@@ -164,7 +170,7 @@
                         {
                             "type": "wms",
                             "name": "Landsat 8 - True colour (RGB)",
-                            "url": "https://desa-ows.sansa.org.za/wms",
+                            "url": "https://desadev-ows.sansa.org.za/wms",
                             "layers": "ls8_sr",
                             "styles": "simple_rgb",
                             "opacity": 1.0
@@ -172,7 +178,7 @@
                         {
                             "type": "wms",
                             "name": "Landsat 8 - False colour (SWIR/NIR/Green)",
-                            "url": "https://desa-ows.sansa.org.za/wms",
+                            "url": "https://desadev-ows.sansa.org.za/wms",
                             "layers": "ls8_sr",
                             "styles": "infrared_green",
                             "opacity": 1.0
@@ -180,7 +186,7 @@
                         {
                             "type": "wms",
                             "name": "Landsat 8 - NDVI (vegetation)",
-                            "url": "https://desa-ows.sansa.org.za/wms",
+                            "url": "https://desadev-ows.sansa.org.za/wms",
                             "layers": "ls8_sr",
                             "styles": "ndvi",
                             "opacity": 0.85
@@ -188,7 +194,7 @@
                         {
                             "type": "wms",
                             "name": "Landsat 8 - NDWI (water)",
-                            "url": "https://desa-ows.sansa.org.za/wms",
+                            "url": "https://desadev-ows.sansa.org.za/wms",
                             "layers": "ls8_sr",
                             "styles": "ndwi",
                             "opacity": 0.85
@@ -196,9 +202,57 @@
                         {
                             "type": "wms",
                             "name": "Landsat 8 - MNDWI (modified water)",
-                            "url": "https://desa-ows.sansa.org.za/wms",
+                            "url": "https://desadev-ows.sansa.org.za/wms",
                             "layers": "ls8_sr",
                             "styles": "mndwi",
+                            "opacity": 0.85
+                        },
+                        {
+                            "type": "wms",
+                            "name": "Sentinel-2 - True colour (RGB)",
+                            "url": "https://desadev-ows.sansa.org.za/wms",
+                            "layers": "s2_l2a",
+                            "styles": "simple_rgb",
+                            "opacity": 1.0
+                        },
+                        {
+                            "type": "wms",
+                            "name": "Sentinel-2 - False colour (SWIR/NIR/Green)",
+                            "url": "https://desadev-ows.sansa.org.za/wms",
+                            "layers": "s2_l2a",
+                            "styles": "infrared_green",
+                            "opacity": 1.0
+                        },
+                        {
+                            "type": "wms",
+                            "name": "Sentinel-2 - NDVI (vegetation)",
+                            "url": "https://desadev-ows.sansa.org.za/wms",
+                            "layers": "s2_l2a",
+                            "styles": "ndvi",
+                            "opacity": 0.85
+                        },
+                        {
+                            "type": "wms",
+                            "name": "Sentinel-2 - NDWI (water)",
+                            "url": "https://desadev-ows.sansa.org.za/wms",
+                            "layers": "s2_l2a",
+                            "styles": "ndwi",
+                            "opacity": 0.85
+                        },
+                        {
+                            "type": "wms",
+                            "name": "Sentinel-2 - MNDWI (modified water)",
+                            "url": "https://desadev-ows.sansa.org.za/wms",
+                            "layers": "s2_l2a",
+                            "styles": "mndwi",
+                            "opacity": 0.85
+                        },
+                        {
+                            "type": "wms",
+                            "name": "Sentinel-2 - NDCI (chlorophyll)",
+                            "url": "https://desadev-ows.sansa.org.za/wms",
+                            "layers": "s2_l2a",
+                            "styles": "ndci",
                             "opacity": 0.85
                         }
                     ]
@@ -210,7 +264,7 @@
                         {
                             "type": "wms",
                             "name": "Landsat 9 - Surface temperature (°C)",
-                            "url": "https://desa-ows.sansa.org.za/wms",
+                            "url": "https://desadev-ows.sansa.org.za/wms",
                             "layers": "ls9_st",
                             "styles": "surface_temperature",
                             "opacity": 0.85
@@ -218,7 +272,7 @@
                         {
                             "type": "wms",
                             "name": "Landsat 9 - Surface temperature, cloud-masked (°C)",
-                            "url": "https://desa-ows.sansa.org.za/wms",
+                            "url": "https://desadev-ows.sansa.org.za/wms",
                             "layers": "ls9_st",
                             "styles": "surface_temperature_masked",
                             "opacity": 0.85
@@ -226,7 +280,7 @@
                         {
                             "type": "wms",
                             "name": "Landsat 9 - Temperature uncertainty (°C)",
-                            "url": "https://desa-ows.sansa.org.za/wms",
+                            "url": "https://desadev-ows.sansa.org.za/wms",
                             "layers": "ls9_st",
                             "styles": "surface_temperature_uncertainty",
                             "opacity": 0.85
@@ -234,7 +288,7 @@
                         {
                             "type": "wms",
                             "name": "Landsat 8 - Surface temperature (°C)",
-                            "url": "https://desa-ows.sansa.org.za/wms",
+                            "url": "https://desadev-ows.sansa.org.za/wms",
                             "layers": "ls8_st",
                             "styles": "surface_temperature",
                             "opacity": 0.85
@@ -242,7 +296,7 @@
                         {
                             "type": "wms",
                             "name": "Landsat 8 - Surface temperature, cloud-masked (°C)",
-                            "url": "https://desa-ows.sansa.org.za/wms",
+                            "url": "https://desadev-ows.sansa.org.za/wms",
                             "layers": "ls8_st",
                             "styles": "surface_temperature_masked",
                             "opacity": 0.85
@@ -250,10 +304,71 @@
                         {
                             "type": "wms",
                             "name": "Landsat 8 - Temperature uncertainty (°C)",
-                            "url": "https://desa-ows.sansa.org.za/wms",
+                            "url": "https://desadev-ows.sansa.org.za/wms",
                             "layers": "ls8_st",
                             "styles": "surface_temperature_uncertainty",
                             "opacity": 0.85
+                        }
+                    ]
+                },
+                {
+                    "name": "Annual GeoMedian Composite",
+                    "type": "group",
+                    "description": "Pre-mosaicked, cloud-free annual surface reflectance composite derived from Landsat 8 & 9, 30 m resolution, available 2021-present.",
+                    "members": [
+                        {
+                            "type": "wms",
+                            "name": "GeoMedian - True colour (RGB)",
+                            "url": "https://desadev-ows.sansa.org.za/wms",
+                            "layers": "gm_ls8_ls9_annual",
+                            "styles": "simple_rgb",
+                            "opacity": 1.0
+                        },
+                        {
+                            "type": "wms",
+                            "name": "GeoMedian - False colour (SWIR/NIR/Green)",
+                            "url": "https://desadev-ows.sansa.org.za/wms",
+                            "layers": "gm_ls8_ls9_annual",
+                            "styles": "infrared_green",
+                            "opacity": 1.0
+                        },
+                        {
+                            "type": "wms",
+                            "name": "GeoMedian - NDVI (vegetation)",
+                            "url": "https://desadev-ows.sansa.org.za/wms",
+                            "layers": "gm_ls8_ls9_annual",
+                            "styles": "ndvi",
+                            "opacity": 0.85
+                        },
+                        {
+                            "type": "wms",
+                            "name": "GeoMedian - NDWI (water)",
+                            "url": "https://desadev-ows.sansa.org.za/wms",
+                            "layers": "gm_ls8_ls9_annual",
+                            "styles": "ndwi",
+                            "opacity": 0.85
+                        },
+                        {
+                            "type": "wms",
+                            "name": "GeoMedian - MNDWI (modified water)",
+                            "url": "https://desadev-ows.sansa.org.za/wms",
+                            "layers": "gm_ls8_ls9_annual",
+                            "styles": "mndwi",
+                            "opacity": 0.85
+                        },
+                        {
+                            "type": "wms",
+                            "name": "GeoMedian - MADs (change detection)",
+                            "url": "https://desadev-ows.sansa.org.za/wms",
+                            "layers": "gm_ls8_ls9_annual",
+                            "styles": "tmad_rgb_std",
+                            "opacity": 0.85,
+                            "info": [
+                                {
+                                    "name": "About",
+                                    "content": "Combined Median Absolute Deviation (SMAD/EMAD/BCMAD) composite -- highlights areas of change or instability across the year."
+                                }
+                            ]
                         }
                     ]
                 }
@@ -267,28 +382,28 @@
                 {
                     "type": "wms",
                     "name": "Provinces",
-                    "url": "https://desa-geoserver.sansa.org.za/geoserver/Datacube-OWS/wms",
+                    "url": "https://desadev-geoserver.sansa.org.za/geoserver/Datacube-OWS/wms",
                     "layers": "Provinces",
                     "opacity": 0.6
                 },
                 {
                     "type": "wms",
                     "name": "District Municipalities",
-                    "url": "https://desa-geoserver.sansa.org.za/geoserver/Datacube-OWS/wms",
+                    "url": "https://desadev-geoserver.sansa.org.za/geoserver/Datacube-OWS/wms",
                     "layers": "District",
                     "opacity": 0.6
                 },
                 {
                     "type": "wms",
                     "name": "Local Municipalities",
-                    "url": "https://desa-geoserver.sansa.org.za/geoserver/Datacube-OWS/wms",
+                    "url": "https://desadev-geoserver.sansa.org.za/geoserver/Datacube-OWS/wms",
                     "layers": "Local",
                     "opacity": 0.6
                 },
                 {
                     "type": "wms",
                     "name": "Wards",
-                    "url": "https://desa-geoserver.sansa.org.za/geoserver/Datacube-OWS/wms",
+                    "url": "https://desadev-geoserver.sansa.org.za/geoserver/Datacube-OWS/wms",
                     "layers": "Wards",
                     "opacity": 0.6
                 }
@@ -296,8 +411,15 @@
         }
     ],
     "baseMaps": {
-        "defaultBaseMapId": "basemap-openstreetmap",
-        "previewBaseMapId": "basemap-openstreetmap",
+        "defaultBaseMapId": "basemap-natural-earth-II",
+        "previewBaseMapId": "basemap-natural-earth-II",
+        "enabledBaseMaps": [
+            "basemap-openstreetmap",
+            "basemap-esri-world-imagery",
+            "basemap-s2cloudless",
+            "basemap-opentopomap",
+            "basemap-natural-earth-II"
+        ],
         "items": [
             {
                 "item": {

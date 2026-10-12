@@ -1,0 +1,131 @@
+# DESA JupyterHub — general science stack (no ODC/datacube)
+# Auth: NativeAuthenticator (self-signup + admin approval)
+# Spawner: DockerSpawner (one container per user)
+
+networks:
+  jupyterhub-net:
+    name: jupyterhub-net
+
+volumes:
+  jupyterhub-data:      # hub state (sqlite/native-auth db, cookie secret)
+  jupyterhub-db-data:
+  pgadmin_data:   # postgres data for the hub
+  datacube-db-data:     # Open Data Cube index (PostGIS)
+  # per-user volumes are created dynamically by DockerSpawner (jupyterhub-user-<name>)
+
+services:
+  hub-db:
+    image: postgres:16
+    container_name: desa-hub-db
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: jupyterhub
+      POSTGRES_USER: jupyterhub
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-changeme-in-.env}
+    volumes:
+      - jupyterhub-db-data:/var/lib/postgresql/data
+    networks:
+      - jupyterhub-net
+    ports:
+      - "5432:5432"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U jupyterhub"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+
+  # Open Data Cube index database — PostGIS. Separate from the hub-db so ODC
+  # data and hub state never collide. User containers connect to it over
+  # jupyterhub-net at hostname "datacube-db".
+  datacube-db:
+    image: postgis/postgis:16-3.4
+    container_name: desa-datacube-db
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: ${DATACUBE_DB_NAME:-datacube}
+      POSTGRES_USER: ${DATACUBE_DB_USER:-datacube}
+      POSTGRES_PASSWORD: ${DATACUBE_DB_PASSWORD:-datacube}
+    volumes:
+      - datacube-db-data:/var/lib/postgresql/data
+    networks:
+      - jupyterhub-net
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${DATACUBE_DB_USER:-datacube}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  pgadmin:
+    image: dpage/pgadmin4:latest
+    container_name: pgadmin4
+    restart: unless-stopped
+    depends_on:
+      hub-db:
+        condition: service_healthy
+    environment:
+      PGADMIN_DEFAULT_EMAIL: ${PGADMIN_EMAIL:-admin@admin.com}
+      PGADMIN_DEFAULT_PASSWORD: ${PGADMIN_PASSWORD:-admin}
+      PGADMIN_CONFIG_SERVER_MODE: "True"
+    ports:
+      - "5050:80"
+    volumes:
+      - pgadmin_data:/var/lib/pgadmin
+      #- ./pgadmin/servers.json:/pgadmin4/servers.json # pre-register the PG server
+    networks:
+      - jupyterhub-net
+
+  hub:
+    build:
+      context: ./hub
+      dockerfile: Dockerfile
+    image: desa/jupyterhub:latest
+    container_name: desa-jupyterhub
+    restart: unless-stopped
+    depends_on:
+      hub-db:
+        condition: service_healthy
+      datacube-db:
+        condition: service_healthy
+    ports:
+      - "8000:8000"       # public hub (put a reverse proxy in front for TLS)
+    environment:
+      # Postgres
+      POSTGRES_HOST: hub-db
+      POSTGRES_DB: jupyterhub
+      POSTGRES_USER: jupyterhub
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-changeme-in-.env}
+      # Spawner
+      DOCKER_NETWORK_NAME: jupyterhub-net
+      DOCKER_NOTEBOOK_IMAGE: desa/singleuser:latest
+      DOCKER_NOTEBOOK_DIR: /home/jovyan/work
+      # Admins (comma-separated usernames that will be granted admin on signup)
+      JUPYTERHUB_ADMIN_USERS: ${JUPYTERHUB_ADMIN_USERS:-admin}
+      # NativeAuthenticator
+      NATIVE_AUTH_OPEN_SIGNUP: "true"          # users can self-register
+      NATIVE_AUTH_ASK_EMAIL: "true"
+      NATIVE_AUTH_MIN_PASSWORD_LEN: "10"
+      # Open Data Cube — injected into each spawned user container so `datacube`
+      # connects to the index DB with no per-user config file.
+      DATACUBE_DB_HOST: datacube-db
+      DATACUBE_DB_NAME: ${DATACUBE_DB_NAME:-datacube}
+      DATACUBE_DB_USER: ${DATACUBE_DB_USER:-datacube}
+      DATACUBE_DB_PASSWORD: ${DATACUBE_DB_PASSWORD:-datacube}
+    volumes:
+      # Persist ONLY hub-local state here. Do NOT mount over /srv/jupyterhub —
+      # that directory holds the config baked into the image, and a volume mount
+      # would shadow it with stale content.
+      - jupyterhub-data:/data
+      - /var/run/docker.sock:/var/run/docker.sock   # required for DockerSpawner
+    networks:
+      - jupyterhub-net
+
+  # Not started by compose — this exists only so `docker compose build singleuser`
+  # produces the user image that DockerSpawner will launch on demand.
+  singleuser:
+    build:
+      context: ./singleuser
+      dockerfile: Dockerfile
+    image: desa/singleuser:latest
+    profiles: ["build-only"]
+    command: ["true"]

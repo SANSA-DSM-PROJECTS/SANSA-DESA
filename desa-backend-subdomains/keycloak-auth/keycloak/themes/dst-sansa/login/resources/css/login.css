@@ -1,0 +1,9 @@
+.login-pf body {
+  /*background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);*/
+  background: red !important;
+}
+
+.card-pf {
+  background: rgba(23, 109, 6, 0.95);
+  border-radius: 30px;
+}

@@ -1,0 +1,8 @@
+FROM opendatacube/explorer:latest
+
+USER root
+
+COPY overlays/templates/layout/base.html \
+    /app/lib/python3.12/site-packages/cubedash/templates/layout/base.html
+
+USER ubuntu

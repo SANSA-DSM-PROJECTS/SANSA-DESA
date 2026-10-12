@@ -57,3 +57,7 @@
 /desa-backend-subdomains/desa-jupyterhub/.env.example.env
 /desa-backend-subdomains/desa-jupyterhub/.docker.env
 /desa-backend-subdomains/desa-jupyterhub/datacube.conf
+
+# Large backend archive snapshots (exceed GitHub's 100MB file limit)
+/desa-backend-subdomains.zip
+/desa-backend-subdomains-current-prod.zip

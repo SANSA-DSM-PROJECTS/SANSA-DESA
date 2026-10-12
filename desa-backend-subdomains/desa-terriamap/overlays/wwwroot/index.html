@@ -1,0 +1,443 @@
+<!doctype html>
+<html lang="en" class="terria">
+
+<head>
+  <base href="/">
+
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=Edge,chrome=1">
+  <meta
+    name="viewport"
+    content="width=device-width,height=device-height,initial-scale=1,maximum-scale=1,minimum-scale=1,user-scalable=no"
+  >
+  <meta
+    name="description"
+    content="A web map built on Terria Map"
+  >
+
+<link
+  rel="icon"
+  type="image/png"
+  href="https://desa.sansa.org.za/assets/img/favicon.png?v=2"
+>
+
+  <meta name="theme-color" content="#282D32">
+
+  <script>
+    L_PREFER_CANVAS = true;
+  </script>
+
+  <script defer src="build/TerriaMap.js"></script>
+  <script defer src="build/svg-sprite.js"></script>
+
+  <link
+    href="build/TerriaMap.css"
+    rel="stylesheet"
+  >
+
+  <style>
+
+    /* =========================================================
+       PAGE BASE
+    ========================================================= */
+
+    html,
+    body{
+      margin:0;
+      padding:0;
+      width:100%;
+      height:100%;
+      overflow:hidden;
+    }
+
+
+    /* =========================================================
+       DESA MAIN NAVIGATION
+    ========================================================= */
+
+    .desa-main-nav{
+      height:64px;
+      width:100%;
+      background:#ffffff;
+
+      position:fixed;
+      top:0;
+      left:0;
+      right:0;
+
+      z-index:999999;
+
+      border-bottom:1px solid rgba(0,0,0,.08);
+      box-shadow:0 2px 10px rgba(0,0,0,.05);
+    }
+
+
+    .desa-nav-inner{
+      max-width:1200px;
+      height:100%;
+
+      margin:0 auto;
+      padding:0 20px;
+
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+    }
+
+
+    /* =========================================================
+       DESA LOGO
+    ========================================================= */
+
+    .desa-brand{
+      display:flex;
+      align-items:center;
+
+      height:100%;
+
+      text-decoration:none;
+    }
+
+
+    .desa-brand img{
+      height:50px;
+      width:auto;
+      display:block;
+    }
+
+
+    /* =========================================================
+       DESA NAVIGATION LINKS
+    ========================================================= */
+
+    .desa-nav-links{
+      display:flex;
+      align-items:center;
+
+      height:100%;
+      gap:24px;
+    }
+
+
+    .desa-nav-links a{
+      position:relative;
+
+      color:#0b2a57;
+      text-decoration:none;
+
+      font-family:"Segoe UI", Arial, sans-serif;
+      font-size:14px;
+      font-weight:600;
+
+      white-space:nowrap;
+    }
+
+
+    .desa-nav-links a:hover{
+      color:#1f66b3;
+    }
+
+
+    .desa-nav-links a.active::after{
+      content:"";
+
+      position:absolute;
+
+      left:0;
+      right:0;
+      bottom:-25px;
+
+      height:3px;
+
+      background:#1f66b3;
+      border-radius:3px;
+    }
+
+
+    /* =========================================================
+       RESPONSIVE DESA NAVIGATION
+    ========================================================= */
+
+    @media(max-width:900px){
+
+      .desa-main-nav{
+        height:auto;
+      }
+
+
+      .desa-nav-inner{
+        flex-direction:column;
+        align-items:flex-start;
+
+        padding:10px 16px;
+      }
+
+
+      .desa-nav-links{
+        width:100%;
+
+        gap:14px;
+
+        overflow-x:auto;
+
+        padding-bottom:8px;
+      }
+
+
+      .desa-nav-links a.active::after{
+        bottom:-8px;
+      }
+
+    }
+
+
+    /* =========================================================
+       TERRIA APPLICATION
+    ========================================================= */
+
+    #ui{
+      position:fixed;
+
+      top:0;
+      left:0;
+      right:0;
+      bottom:0;
+    }
+
+
+    /* =========================================================
+       TERRIA FEEDBACK BUTTON
+       Lift slightly so it is fully visible.
+    ========================================================= */
+
+    button[title="Give Feedback"]{
+      transform:translateY(-25px) !important;
+    }
+
+  </style>
+
+</head>
+
+
+<body>
+
+
+  <!-- =======================================================
+       DESA NAVIGATION
+  ======================================================== -->
+
+  <header class="desa-main-nav">
+
+    <div class="desa-nav-inner">
+
+
+      <a
+        class="desa-brand"
+        href="https://desa.sansa.org.za/"
+      >
+        <img
+          src="https://desa.sansa.org.za/assets/img/logo-desa.png"
+          alt="Digital Earth SA"
+        >
+      </a>
+
+
+      <nav class="desa-nav-links">
+
+        <a href="https://desa.sansa.org.za/">
+          Home
+        </a>
+
+        <a href="https://desa.sansa.org.za/about-us">
+          About Us
+        </a>
+
+        <a href="https://desa.sansa.org.za/analysis-ready-data">
+          Analysis Ready Data
+        </a>
+
+        <a href="https://desa.sansa.org.za/platforms">
+          Platforms
+        </a>
+
+        <a href="https://desa.sansa.org.za/decision-support-tools">
+          Decision Support Tools
+        </a>
+
+        <a href="https://desa.sansa.org.za/help">
+          Help
+        </a>
+
+        <a href="https://desa.sansa.org.za/contact">
+          Contact Us
+        </a>
+
+      </nav>
+
+    </div>
+
+  </header>
+
+
+
+  <!-- =======================================================
+       TERRIA APPLICATION ROOT
+  ======================================================== -->
+
+  <div
+    id="svg-sprites"
+    style="display:none"
+  ></div>
+
+  <div id="ui"></div>
+
+
+
+  <!-- =======================================================
+       TERRIA POSITIONING FIXES
+  ======================================================== -->
+
+<script>
+(function () {
+
+  /* =========================================================
+     TERRIA BRANDING SPACER
+
+     The branding image was removed, but Terria still renders
+     the branding container. Keep a small 22px gap so the
+     search box does not sit directly against the top.
+  ========================================================= */
+
+  function adjustTerriaBrandingSpace() {
+
+    document
+      .querySelectorAll('div[class*="Branding___StyledDiv"]')
+      .forEach(function(element) {
+
+        element.style.setProperty(
+          "display",
+          "block",
+          "important"
+        );
+
+        element.style.setProperty(
+          "height",
+          "22px",
+          "important"
+        );
+
+        element.style.setProperty(
+          "min-height",
+          "22px",
+          "important"
+        );
+
+        element.style.setProperty(
+          "max-height",
+          "22px",
+          "important"
+        );
+
+        element.style.setProperty(
+          "flex",
+          "0 0 22px",
+          "important"
+        );
+
+        element.style.setProperty(
+          "flex-basis",
+          "22px",
+          "important"
+        );
+
+        element.style.setProperty(
+          "overflow",
+          "hidden",
+          "important"
+        );
+
+      });
+  }
+
+
+  /* =========================================================
+     MOVE COMPLETE TERRIA UI BELOW DESA NAVBAR
+
+     Instead of moving the sidebar, About button and toolbar
+     individually, move Terria's main interface as one unit.
+  ========================================================= */
+
+  function adjustTerriaMainUI() {
+
+    const terriaUI = document.querySelector(
+      '.tjs-standard-user-interface__uiInner'
+    );
+
+    if (terriaUI) {
+
+      terriaUI.style.setProperty(
+        "transform",
+        "translateY(64px)",
+        "important"
+      );
+
+      terriaUI.style.setProperty(
+        "height",
+        "calc(100% - 64px)",
+        "important"
+      );
+
+    }
+
+  }
+
+
+  /* =========================================================
+     APPLY ALL TERRIA CUSTOMISATIONS
+  ========================================================= */
+
+  function adjustTerriaUI() {
+
+    adjustTerriaBrandingSpace();
+    adjustTerriaMainUI();
+
+  }
+
+
+  /* =========================================================
+     TERRIA IS RENDERED BY REACT
+
+     Re-apply after React renders or changes the interface.
+  ========================================================= */
+
+  document.addEventListener(
+    "DOMContentLoaded",
+    function() {
+
+      adjustTerriaUI();
+
+      setTimeout(adjustTerriaUI, 100);
+      setTimeout(adjustTerriaUI, 500);
+      setTimeout(adjustTerriaUI, 1000);
+
+      const observer = new MutationObserver(function() {
+        adjustTerriaUI();
+      });
+
+      observer.observe(
+        document.body,
+        {
+          childList: true,
+          subtree: true
+        }
+      );
+
+    }
+  );
+
+})();
+</script>
+
+</body>
+
+</html>

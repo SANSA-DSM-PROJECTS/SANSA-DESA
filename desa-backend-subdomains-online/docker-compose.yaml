@@ -1,0 +1,172 @@
+services:
+  # NGINX reverse proxy to hide all ports
+  desa-nginx:
+    image: nginx:alpine
+    container_name: desa-nginx
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./nginx/conf:/etc/nginx/conf.d
+      - ./nginx/ssl:/etc/nginx/ssl
+      - ./desa-ui:/var/www
+    restart: always
+    depends_on:
+      - desa-explorer
+      - desa-jupyterhub
+      - desa-ows
+      - desa-terriamap
+    networks:
+      - desa-network
+
+  # OpenDataCube Explorer
+  desa-explorer:
+    build:
+      context: ./desa-explorer
+    image: desa-explorer-custom
+    container_name: explorer
+    environment:
+      DB_HOSTNAME: "${PGDB_HOSTNAME}"
+      DB_USERNAME: "${PGDB_USERNAME}"
+      DB_PASSWORD: "${PGDB_PASSWORD}"
+      DB_DATABASE: "${PGDB_DATABASE}"
+      DB_PORT: "5432"
+      FLASK_ENV: deployment
+      FLASK_APP: cubedash
+      FLASK_DEBUG: 0
+      CUBEDASH_DEFAULT_TIMEZONE: Africa/Johannesburg
+    expose:
+      - "8000"
+    restart: unless-stopped
+    networks:
+      - desa-network
+    depends_on:
+      - desa-postgres
+
+  # JupyterHub service
+  desa-jupyterhub:
+    build: ./desa-jupyterhub
+    image: jupyter
+    container_name: jupyterhub
+    environment:
+      AWS_NO_SIGN_REQUEST: true
+      AWS_DEFAULT_REGION: af-south-1
+      DATACUBE_DB_URL: postgresql://${PGDB_USERNAME}:${PGDB_PASSWORD}@${PGDB_HOSTNAME}/${PGDB_DATABASE}
+    volumes:
+      - ./desa-jupyterhub/jupyterhub_config.py:/srv/jupyterhub/jupyterhub_config.py
+      - jupyterhub_data:/srv/jupyterhub/data
+      # Mounted rather than relying solely on the Dockerfile's `COPY datacube.conf
+      # /etc/`, so ODC config changes take effect on container recreate instead of
+      # requiring a full image rebuild. The file must exist before `up` -- it is
+      # gitignored (it holds DB credentials); copy datacube.conf.example to
+      # datacube.conf on a fresh checkout, or Docker will create a directory here.
+      - ./desa-jupyterhub/datacube.conf:/etc/datacube.conf:ro
+      # TLS is terminated by nginx (desadev-hub.sansa.org.za), and
+      # jupyterhub_config.py does not reference a cert or key. The previous
+      # jupyterhub.key/.crt bind-mounts pointed at files that did not exist,
+      # so Docker silently created empty *directories* in their place.
+    networks:
+      - desa-network
+    expose:
+      - "8000"
+    restart: unless-stopped
+    depends_on:
+      - desa-postgres
+  desa-terriamap:
+    build: ./desa-terriamap
+    image: terriamap
+    container_name: map
+    networks:
+      - desa-network
+    expose:
+      - "3001"
+    restart: unless-stopped
+    volumes:
+      - ./nginx/ssl/sansa-bundle.txt:/app/sansa-bundle.pem:ro
+    environment:
+      NODE_EXTRA_CA_CERTS: /app/sansa-bundle.pem
+
+  # PostgreSQL database
+  desa-postgres:
+    container_name: desa-postgres
+    image: postgis/postgis:16-3.4
+    hostname: "${PGDB_HOSTNAME}"
+    environment:
+      POSTGRES_DB: "${PGDB_DATABASE}"
+      POSTGRES_PASSWORD: "${PGDB_PASSWORD}"
+      POSTGRES_USER: "${PGDB_USERNAME}"
+    # Expose port only internally, not on host
+    expose:
+      - "5432"
+    networks:
+      - desa-network
+    restart: always
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U $${POSTGRES_USER} -d $${POSTGRES_DB}"]
+      timeout: 45s
+      interval: 10s
+      retries: 10
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+  # PGAdmin interface
+
+  # OWS service
+  desa-ows:
+    image: opendatacube/ows:1.8.0-rc1
+    environment:
+      DB_HOSTNAME: "${PGDB_HOSTNAME}"
+      DB_USERNAME: "${PGDB_USERNAME}"
+      DB_PASSWORD: "${PGDB_PASSWORD}"
+      DB_DATABASE: "${PGDB_DATABASE}"
+      DB_PORT: 5432
+      # GLOBAL S3 settings target real AWS (Digital Earth Africa public buckets):
+      # unsigned, HTTPS, virtual-hosted. MinIO is NOT configured here -- GDAL's
+      # S3 settings are process-global and the two stores are incompatible, so
+      # MinIO is handled per-path via GDAL_CONFIG_FILE below. Setting the MinIO
+      # endpoint globally (as before) made every DE Africa read fail.
+      AWS_DEFAULT_REGION: "${AWS_REGION}"
+      AWS_NO_SIGN_REQUEST: "YES"
+      GDAL_CONFIG_FILE: /env/config/gdal-s3.conf
+      PYTHONPATH: /env/config
+      DATACUBE_OWS_CFG: ows_refactored.dev_af_ows_root_cfg.ows_cfg
+    expose:
+      - "8000"
+    restart: unless-stopped
+    networks:
+      - desa-network
+    depends_on:
+      - desa-postgres
+    volumes:
+      - ./desa-ows/products:/products
+      # Rendered from .env by desa-ows/render-gdal-conf.sh -- gitignored, must
+      # exist before `up` or Docker will create a directory in its place.
+      - ./desa-ows/gdal-s3.conf:/env/config/gdal-s3.conf:ro
+      - ./desa-ows/services/ows_refactored:/env/config/ows_refactored/
+      - ./desa-ows/services/inventory:/env/config/inventory/
+      - ./desa-ows/output:/env/config/output/
+
+  desa-contact:
+    build:
+      context: ./desa-contact
+    container_name: desa-contact
+    environment:
+      SMTP_HOST: "relay3.sansa.org.za"
+      SMTP_PORT: "25"
+      MAIL_FROM: "desa@sansa.org.za"
+      MAIL_TO: "desa@sansa.org.za"
+    expose:
+      - "8000"
+    restart: unless-stopped
+    networks:
+      - desa-network
+
+networks:
+  desa-network:
+    driver: bridge
+
+volumes:
+  jupyterhub_data:
+  postgres_data:
+  pgadmin_data:
+

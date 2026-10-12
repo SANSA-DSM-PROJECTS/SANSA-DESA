@@ -1,0 +1,177 @@
+# rio-cogeo
+access
+affine
+aiobotocore[boto3,awscli]
+alabaster
+astropy
+autopep8
+black[jupyter]
+bokeh
+boltons
+bottleneck
+cartopy
+cattrs
+ciso8601
+click
+cligj
+climate_indices
+cmocean
+cognitojwt # Used for user authentication
+colorama
+contextily
+dask-gateway-server
+hdstats
+dask-gateway
+dask-image
+kombu
+dask-labextension>=7.0.0
+dask-ml
+dask[complete] # due to dask-gateway
+# datacube-stats==1.0.2 # Replaced by odc-stats
+# dataclasses #  backport for Python 3.6
+datacube
+datacube-ows
+datashader
+deafrica-tools==2.4.4
+descartes
+dill
+distributed # due to dask-gateway
+docutils
+eodatasets3
+flox
+folium
+geohash2
+geojson
+geopy
+geoviews
+graphviz
+h5py
+hdmedians --no-binary=hdmedians
+holoviews
+https://github.com/ubarsc/rios/archive/rios-1.4.10.tar.gz
+ipycanvas
+ipyevents
+ipyfilechooser
+ipyleaflet
+ipympl
+ipython
+ipywidgets
+isort
+jedi
+jsonschema
+#jupyter_bokeh>=4.0.0
+# jupyter-contrib-core
+# jupyter-contrib-nbextensions
+# jupyter-nbextensions-configurator
+# jupyter-resource-usage>=1.0.0
+# jupyter-server
+# jupyter-server-proxy>=4.1.0
+# jupyter-ui-poll
+# jupyter
+# jupyterhub
+# jupyterhub-nativeauthenticator
+# jupyterlab-code-formatter
+# jupyterlab-code-snippets
+# jupyterlab-geojson
+# jupyterlab-git
+# jupyterlab-iframe>=0.5.0
+# jupyterlab-language-pack-fr-FR
+# jupyterlab-logout>=1.0.0
+# # jupyterlab-system-monitor archived and components moved to jupyter-resource-usage
+# jupyterlab-theme-toggler
+# jupyterlab-topbar-text # replace jupyterlab-topbar
+# jupyterlab-widgets
+# jupyterlab>=4.0
+# jupytext
+lark-parser
+latex
+line-profiler
+mapclassify
+memory-profiler
+mypy
+nbconvert # because of jupyter_contrib_nbextensions
+nbdime
+nbformat
+nbgitpuller
+nbmake
+nbval
+netcdf4
+numba
+numexpr
+numpy
+odc-algo
+odc-cloud[ASYNC]
+odc-dscache
+odc-geo
+odc-io
+odc-stac
+odc-stats
+# odc-tools apps
+odc-apps-cloud
+odc-apps-dc-tools
+# odc-tools libs
+odc-ui
+opencv-contrib-python-headless
+opencv-python-headless
+osmnx
+# otps
+OWSLib
+pandana
+pandas==2.1.4
+pandoc
+panel
+param
+parso
+pathos
+Pillow
+plotly
+poetry
+prompt-toolkit # because of line_profiler/ipython
+protobuf
+psycopg2
+pydash
+py3dotplus # replace pydotplus
+pyproj
+pyrsistent
+pysal
+pysheds
+pystac-client
+pytest
+pytest-reportlog
+pytest-xdist
+python-dateutil
+python-geohash
+pyTMD
+pyviz_comms
+pyyaml
+rioxarray
+Rtree
+git+https://github.com/daleroberts/s2cloudmask
+s3fs
+scikit-image
+scikit-learn
+scipy
+seaborn
+setuptools-scm[toml]
+# setuptools < 60.0 # For numpy.distutils
+setuptools==73.0.0
+sidecar
+spyndex
+sqlalchemy
+structlog
+tensorflow
+tflite-runtime-nightly
+thredds-crawler # archived
+toolz
+tqdm
+urbanaccess
+urllib3
+voluptuous
+wapordl
+xarray
+xgboost # used by Dale's s2cloudmask
+yapf
+zarr
+
+--no-binary rasterio
+--no-binary hdstats

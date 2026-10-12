@@ -1,0 +1,201 @@
+{
+  "realm": "desa",
+  "displayName": "Digital Earth SA",
+  "enabled": true,
+  "registrationAllowed": true,
+  "registrationEmailAsUsername": true,
+  "loginWithEmailAllowed": true,
+  "duplicateEmailsAllowed": false,
+  "resetPasswordAllowed": true,
+  "loginTheme": "desa",
+
+  "comment_access_control": "Self-registered users auto-join the pending-approval group (defaultGroups below), which grants the pending-approval realm role. TWO flows enforce the block: browserFlow 'browser-with-approval' denies normal logins by anyone holding that role, and registrationFlow 'registration-with-approval' denies the auto-login that Keycloak performs immediately after self-registration (without which a brand-new user would be logged straight in, bypassing the browser flow). Both still CREATE the account, so an admin can approve it by removing the user from the pending-approval group in the admin console (Users > user > Groups > Leave). Email alerts to admins are not yet configured (needs smtpServer).",
+  "browserFlow": "browser-with-approval",
+  "registrationFlow": "registration-with-approval",
+  "defaultGroups": ["/pending-approval"],
+
+  "components": {
+    "org.keycloak.userprofile.UserProfileProvider": [
+      {
+        "providerId": "declarative-user-profile",
+        "subComponents": {},
+        "config": {
+          "kc.user.profile.config": [
+            "{\"attributes\": [{\"name\": \"username\", \"displayName\": \"${username}\", \"validations\": {\"length\": {\"min\": 3, \"max\": 255}, \"username-prohibited-characters\": {}, \"up-username-not-idn-homograph\": {}}, \"permissions\": {\"view\": [\"admin\", \"user\"], \"edit\": [\"admin\", \"user\"]}, \"multivalued\": false}, {\"name\": \"email\", \"displayName\": \"${email}\", \"validations\": {\"email\": {}, \"length\": {\"max\": 255}}, \"required\": {\"roles\": [\"user\"]}, \"permissions\": {\"view\": [\"admin\", \"user\"], \"edit\": [\"admin\", \"user\"]}, \"multivalued\": false}, {\"name\": \"firstName\", \"displayName\": \"${firstName}\", \"validations\": {\"length\": {\"max\": 255}, \"person-name-prohibited-characters\": {}}, \"required\": {\"roles\": [\"user\"]}, \"permissions\": {\"view\": [\"admin\", \"user\"], \"edit\": [\"admin\", \"user\"]}, \"multivalued\": false}, {\"name\": \"lastName\", \"displayName\": \"${lastName}\", \"validations\": {\"length\": {\"max\": 255}, \"person-name-prohibited-characters\": {}}, \"required\": {\"roles\": [\"user\"]}, \"permissions\": {\"view\": [\"admin\", \"user\"], \"edit\": [\"admin\", \"user\"]}, \"multivalued\": false}, {\"name\": \"organization\", \"displayName\": \"Organisation\", \"validations\": {\"length\": {\"min\": 2, \"max\": 100}}, \"required\": {\"roles\": [\"user\"]}, \"permissions\": {\"view\": [\"admin\", \"user\"], \"edit\": [\"admin\", \"user\"]}, \"multivalued\": false}]}"
+          ]
+        }
+      }
+    ]
+  },
+
+  "clients": [
+    {
+      "clientId": "desa-jupyterhub",
+      "name": "DESA JupyterHub",
+      "enabled": true,
+      "protocol": "openid-connect",
+      "publicClient": false,
+      "standardFlowEnabled": true,
+      "directAccessGrantsEnabled": false,
+      "serviceAccountsEnabled": false,
+      "rootUrl": "https://desadev-hub.sansa.org.za",
+      "baseUrl": "/hub/",
+      "redirectUris": [
+        "https://desadev-hub.sansa.org.za/hub/oauth_callback"
+      ],
+      "webOrigins": [
+        "https://desadev-hub.sansa.org.za"
+      ],
+      "attributes": {
+        "post.logout.redirect.uris": "https://desadev-hub.sansa.org.za/hub/login"
+      }
+    }
+  ],
+  "roles": {
+    "realm": [
+      {
+        "name": "pending-approval",
+        "description": "Assigned via the pending-approval group to new self-registrations. While a user holds this role, the browser-with-approval flow denies login. Admin removes the user from the group to grant access.",
+        "composite": false,
+        "clientRole": false
+      }
+    ]
+  },
+  "groups": [
+    {
+      "name": "pending-approval",
+      "path": "/pending-approval",
+      "realmRoles": ["pending-approval"]
+    }
+  ],
+
+  "authenticationFlows": [
+    {
+      "alias": "browser-with-approval",
+      "description": "Browser based authentication, with a pending-approval login block",
+      "providerId": "basic-flow",
+      "topLevel": true,
+      "builtIn": false,
+      "authenticationExecutions": [
+        { "authenticator": "auth-cookie", "authenticatorFlow": false, "requirement": "ALTERNATIVE", "priority": 10, "userSetupAllowed": false },
+        { "authenticator": "auth-spnego", "authenticatorFlow": false, "requirement": "DISABLED", "priority": 20, "userSetupAllowed": false },
+        { "authenticator": "identity-provider-redirector", "authenticatorFlow": false, "requirement": "ALTERNATIVE", "priority": 25, "userSetupAllowed": false },
+        { "authenticatorFlow": true, "requirement": "ALTERNATIVE", "priority": 26, "flowAlias": "browser-with-approval Organization", "userSetupAllowed": false },
+        { "authenticatorFlow": true, "requirement": "ALTERNATIVE", "priority": 30, "flowAlias": "browser-with-approval forms", "userSetupAllowed": false }
+      ]
+    },
+    {
+      "alias": "browser-with-approval Organization",
+      "providerId": "basic-flow",
+      "topLevel": false,
+      "builtIn": false,
+      "authenticationExecutions": [
+        { "authenticatorFlow": true, "requirement": "CONDITIONAL", "priority": 10, "flowAlias": "browser-with-approval Browser - Conditional Organization", "userSetupAllowed": false }
+      ]
+    },
+    {
+      "alias": "browser-with-approval Browser - Conditional Organization",
+      "description": "Flow to determine if the organization identity-first login is to be used",
+      "providerId": "basic-flow",
+      "topLevel": false,
+      "builtIn": false,
+      "authenticationExecutions": [
+        { "authenticator": "conditional-user-configured", "authenticatorFlow": false, "requirement": "REQUIRED", "priority": 10, "userSetupAllowed": false },
+        { "authenticator": "organization", "authenticatorFlow": false, "requirement": "ALTERNATIVE", "priority": 20, "userSetupAllowed": false }
+      ]
+    },
+    {
+      "alias": "browser-with-approval forms",
+      "description": "Username, password, otp and other auth forms.",
+      "providerId": "basic-flow",
+      "topLevel": false,
+      "builtIn": false,
+      "authenticationExecutions": [
+        { "authenticator": "auth-username-password-form", "authenticatorFlow": false, "requirement": "REQUIRED", "priority": 0, "userSetupAllowed": false },
+        { "authenticatorFlow": true, "requirement": "CONDITIONAL", "priority": 10, "flowAlias": "Pending approval check", "userSetupAllowed": false },
+        { "authenticatorFlow": true, "requirement": "CONDITIONAL", "priority": 21, "flowAlias": "browser-with-approval Browser - Conditional 2FA", "userSetupAllowed": false }
+      ]
+    },
+    {
+      "alias": "Pending approval check",
+      "description": "Denies login while the user is still in the pending-approval group",
+      "providerId": "basic-flow",
+      "topLevel": false,
+      "builtIn": false,
+      "authenticationExecutions": [
+        { "authenticatorConfig": "pending-approval-role-condition", "authenticator": "conditional-user-role", "authenticatorFlow": false, "requirement": "REQUIRED", "priority": 0, "userSetupAllowed": false },
+        { "authenticatorConfig": "deny-pending-approval-browser", "authenticator": "deny-access-authenticator", "authenticatorFlow": false, "requirement": "REQUIRED", "priority": 1, "userSetupAllowed": false }
+      ]
+    },
+    {
+      "alias": "browser-with-approval Browser - Conditional 2FA",
+      "description": "Flow to determine if any 2FA is required for the authentication",
+      "providerId": "basic-flow",
+      "topLevel": false,
+      "builtIn": false,
+      "authenticationExecutions": [
+        { "authenticator": "conditional-user-configured", "authenticatorFlow": false, "requirement": "REQUIRED", "priority": 10, "userSetupAllowed": false },
+        { "authenticatorConfig": "browser-with-approval browser-conditional-credential", "authenticator": "conditional-credential", "authenticatorFlow": false, "requirement": "REQUIRED", "priority": 20, "userSetupAllowed": false },
+        { "authenticator": "auth-otp-form", "authenticatorFlow": false, "requirement": "ALTERNATIVE", "priority": 30, "userSetupAllowed": false },
+        { "authenticator": "webauthn-authenticator", "authenticatorFlow": false, "requirement": "DISABLED", "priority": 40, "userSetupAllowed": false },
+        { "authenticator": "auth-recovery-authn-code-form", "authenticatorFlow": false, "requirement": "DISABLED", "priority": 50, "userSetupAllowed": false }
+      ]
+    },
+    {
+      "alias": "registration-with-approval",
+      "description": "Registration flow that blocks the post-registration auto-login for pending-approval users",
+      "providerId": "basic-flow",
+      "topLevel": true,
+      "builtIn": false,
+      "authenticationExecutions": [
+        { "authenticatorFlow": true, "requirement": "REQUIRED", "priority": 0, "flowAlias": "registration-with-approval registration form", "userSetupAllowed": false },
+        { "authenticatorFlow": true, "requirement": "CONDITIONAL", "priority": 10, "flowAlias": "Pending approval check (registration)", "userSetupAllowed": false }
+      ]
+    },
+    {
+      "alias": "registration-with-approval registration form",
+      "providerId": "form-flow",
+      "topLevel": false,
+      "builtIn": false,
+      "authenticationExecutions": [
+        { "authenticator": "registration-user-creation", "authenticatorFlow": false, "requirement": "REQUIRED", "priority": 0, "userSetupAllowed": false },
+        { "authenticator": "registration-password-action", "authenticatorFlow": false, "requirement": "REQUIRED", "priority": 1, "userSetupAllowed": false },
+        { "authenticator": "registration-recaptcha-action", "authenticatorFlow": false, "requirement": "DISABLED", "priority": 2, "userSetupAllowed": false },
+        { "authenticator": "registration-terms-and-conditions", "authenticatorFlow": false, "requirement": "DISABLED", "priority": 3, "userSetupAllowed": false }
+      ]
+    },
+    {
+      "alias": "Pending approval check (registration)",
+      "description": "Denies the post-registration auto-login while the user is in the pending-approval group",
+      "providerId": "basic-flow",
+      "topLevel": false,
+      "builtIn": false,
+      "authenticationExecutions": [
+        { "authenticatorConfig": "pending-approval-role-condition-registration", "authenticator": "conditional-user-role", "authenticatorFlow": false, "requirement": "REQUIRED", "priority": 0, "userSetupAllowed": false },
+        { "authenticatorConfig": "deny-pending-approval-registration", "authenticator": "deny-access-authenticator", "authenticatorFlow": false, "requirement": "REQUIRED", "priority": 1, "userSetupAllowed": false }
+      ]
+    }
+  ],
+  "authenticatorConfig": [
+    {
+      "alias": "pending-approval-role-condition",
+      "config": { "condUserRole": "pending-approval" }
+    },
+    {
+      "alias": "pending-approval-role-condition-registration",
+      "config": { "condUserRole": "pending-approval" }
+    },
+    {
+      "alias": "deny-pending-approval-browser",
+      "config": { "denyErrorMessage": "pendingApprovalMessage" }
+    },
+    {
+      "alias": "deny-pending-approval-registration",
+      "config": { "denyErrorMessage": "pendingApprovalMessage" }
+    },
+    {
+      "alias": "browser-with-approval browser-conditional-credential",
+      "config": { "credentials": "webauthn-passwordless" }
+    }
+  ]
+}

@@ -1,0 +1,81 @@
+---
+name: gm_ls8_ls9_annual
+description: >-
+  Digital Earth Africa Annual GeoMedian (GeoMAD) composite, Landsat 8 & 9.
+  A pre-mosaicked, cloud-free, seamless full-country annual surface
+  reflectance composite with associated MAD (median absolute deviation)
+  layers (EMAD/SMAD/BCMAD) and pixel COUNT. Available annually from 2021.
+  Source collection: gm_ls8_ls9_annual, s3://deafrica-services.
+metadata_type: eo3
+license: CC-BY-4.0
+
+metadata:
+  product:
+    name: gm_ls8_ls9_annual
+
+storage:
+  crs: EPSG:6933
+  resolution:
+    x: 30
+    y: -30
+
+measurements:
+  - name: SR_B2
+    aliases: [blue, band_2]
+    units: "1"
+    dtype: uint16
+    nodata: 0
+
+  - name: SR_B3
+    aliases: [green, band_3]
+    units: "1"
+    dtype: uint16
+    nodata: 0
+
+  - name: SR_B4
+    aliases: [red, band_4]
+    units: "1"
+    dtype: uint16
+    nodata: 0
+
+  - name: SR_B5
+    aliases: [nir, band_5]
+    units: "1"
+    dtype: uint16
+    nodata: 0
+
+  - name: SR_B6
+    aliases: [swir_1, band_6]
+    units: "1"
+    dtype: uint16
+    nodata: 0
+
+  - name: SR_B7
+    aliases: [swir_2, band_7]
+    units: "1"
+    dtype: uint16
+    nodata: 0
+
+  - name: SMAD
+    aliases: [smad, sdev, SDEV]
+    units: "1"
+    dtype: float32
+    nodata: NaN
+
+  - name: EMAD
+    aliases: [emad, edev, EDEV]
+    units: "1"
+    dtype: float32
+    nodata: NaN
+
+  - name: BCMAD
+    aliases: [bcmad, bcdev, BCDEV]
+    units: "1"
+    dtype: float32
+    nodata: NaN
+
+  - name: COUNT
+    aliases: [count]
+    units: "1"
+    dtype: uint16
+    nodata: 0

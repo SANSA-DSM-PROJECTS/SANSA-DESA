@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>DESA | Contact Us</title>
+  <link rel="stylesheet" href="assets/css/style.css" />
+</head>
+<body>
+
+<!-- NAV -->
+<header class="nav">
+  <div class="nav-inner">
+    <a class="brand" href="/">
+      <img src="assets/img/logo-desa.png" alt="DESA Logo">
+    </a>
+
+    <nav class="nav-links">
+      <a href="/" data-nav>Home</a>
+      <a href="/about-us" data-nav>About Us</a>
+      <a href="/analysis-ready-data" data-nav>Analysis Ready Data</a>
+      <a href="/platforms" data-nav>Platforms</a>
+	  <a href="/decision-support-tools" data-nav>Decision Support Tools</a>
+      <a href="/help" data-nav>Help</a>
+      <a href="/contact" class="active" data-nav>Contact</a>
+    </nav>
+  </div>
+</header>
+
+<!-- HERO -->
+<section class="hero hero-contact">
+  <div class="hero-content center">
+    <h1>Contact Us</h1>
+    <p>
+      Get in touch with the DESA team for support, enquiries, or collaboration opportunities.
+    </p>
+  </div>
+</section>
+
+
+
+<!-- CONTACT FORM -->
+<section class="section section-light">
+  <h2>Contact DESA</h2>
+  <p class="lead">
+    Send us your enquiry regarding data access, platforms, or technical support.
+  </p>
+
+  <div class="contact-layout">
+
+    <!-- LEFT PANEL (kept, but cleaner) -->
+    <div class="contact-info-panel">
+      <h3>Support & Enquiries</h3>
+      <p>
+        The DESA team supports users across data access, platforms, and Earth
+        Observation workflows.
+      </p>
+
+      <div class="contact-info-list">
+        <div>
+          <strong>Email</strong>
+          <span>desa@sansa.org.za</span>
+        </div>
+        <div>
+          <strong>Response time</strong>
+          <span>1–2 working days</span>
+        </div>
+        <div>
+          <strong>Focus areas</strong>
+          <span>Platforms, ARD, data access, technical support</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- FORM -->
+    <form class="contact-form-card" action="contact-submit.php" method="POST">
+
+      <div class="field-group">
+        <label>Name <span>*</span></label>
+        <div class="name-row">
+          <div>
+            <input type="text" name="first_name" required>
+            <small>First</small>
+          </div>
+          <div>
+            <input type="text" name="last_name" required>
+            <small>Last</small>
+          </div>
+        </div>
+      </div>
+
+      <div class="field-group">
+        <label>Email <span>*</span></label>
+        <input type="email" name="email" required>
+      </div>
+
+      <div class="field-group">
+        <label>Type of enquiry <span>*</span></label>
+        <div class="radio-row">
+          <label><input type="radio" name="enquiry_type" value="General enquiry" required> General enquiry</label>
+          <label><input type="radio" name="enquiry_type" value="Data enquiry"> Data enquiry</label>
+          <label><input type="radio" name="enquiry_type" value="Technical enquiry"> Technical enquiry</label>
+        </div>
+      </div>
+
+      <div class="field-group">
+        <label>Comment or Message</label>
+        <textarea name="message" rows="6" required></textarea>
+      </div>
+
+      <button type="submit" class="btn primary">Submit</button>
+
+    </form>
+
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer class="footer">
+  <div class="footer-inner footer-logos">
+    <div class="footer-logo left">
+      <img src="assets/img/logo-dsti.jpg">
+    </div>
+
+    <div class="footer-center">
+      © <span id="year">2026</span> Digital Earth South Africa | SANSA
+    </div>
+
+    <div class="footer-logo right">
+      <img src="assets/img/logo-sansa.jpg">
+    </div>
+  </div>
+</footer>
+
+<script src="assets/js/main.js" defer></script>
+
+</body>
+</html>

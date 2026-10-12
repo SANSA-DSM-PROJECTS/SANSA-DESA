@@ -1,0 +1,87 @@
+# =============================================================
+# DESA backend — git exclusions
+# =============================================================
+# NOTE: Secrets are excluded here rather than moved off disk,
+# because docker-compose bind-mounts several of these paths
+# (e.g. ./nginx/ssl). Moving them would break the running stack.
+# They stay on the host, but never enter git history.
+# =============================================================
+
+# -------- Secrets: environment files --------
+.env
+.env.*
+!.env.example
+!example.env
+**/.env
+**/.env.*
+!**/.env.example
+
+# -------- Secrets: TLS certificates & private keys --------
+nginx/ssl/*
+!nginx/ssl/README.md
+**/*.key
+**/*.pem
+**/*.p12
+**/*.pfx
+**/sansa-private*
+**/sansa-certificate*
+**/sansa-bundle*
+desa-jupyterhub/jupyterhub.key
+desa-jupyterhub/jupyterhub.crt
+
+# -------- Secrets: datacube / service configs with credentials --------
+desa-jupyterhub/datacube.conf
+!desa-jupyterhub/datacube.conf.example
+# Rendered from .env by desa-ows/render-gdal-conf.sh; holds MinIO credentials.
+desa-ows/gdal-s3.conf
+!desa-ows/gdal-s3.conf.example
+
+# -------- Vendored TerriaMap checkouts (upstream, not our code) --------
+# Only desa-terriamap/ is used by docker-compose.yaml.
+TerriaMap/
+desa-terriamap-old/
+
+# -------- Dependencies & build artifacts --------
+node_modules/
+**/node_modules/
+.yarn/
+**/.yarn/
+dist/
+build/
+desa-ui/vendor/
+
+# -------- Python caches --------
+__pycache__/
+**/__pycache__/
+*.py[cod]
+*.egg-info/
+.ipynb_checkpoints/
+**/.ipynb_checkpoints/
+
+# -------- OWS runtime output --------
+desa-ows/output/*
+!desa-ows/output/.gitkeep
+
+# -------- Large media (host locally or use Git LFS / a CDN) --------
+# platform-analysis.mp4 alone is 57 MB; GitHub warns above 50 MB.
+desa-ui/assets/vid/
+*.mp4
+*.mov
+*.avi
+
+# -------- Archives --------
+*.zip
+*.tar
+*.tar.gz
+
+# -------- Editor / OS noise --------
+.DS_Store
+Thumbs.db
+desktop.ini
+.vscode/
+.idea/
+*.swp
+*~
+
+# -------- Local agent/tooling state --------
+.claude/

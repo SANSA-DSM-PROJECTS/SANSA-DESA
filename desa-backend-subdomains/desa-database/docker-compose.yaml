@@ -1,0 +1,139 @@
+# =============================================================================
+# DESA – Database stack (ODC index + GeoServer vector DB)
+# -----------------------------------------------------------------------------
+# One PostGIS server, three databases' worth of responsibility, kept apart by
+# database and role:
+#
+#   datacube           ODC index (products, datasets, lineage) + Explorer's
+#                      cubedash schema. Used by OWS, Explorer, JupyterHub and
+#                      the indexing scripts.
+#   geoserver_vector   Vector layers for GeoServer (dams, catchments, …).
+#
+# Start:
+#   docker network create desa-network          # once, if it doesn't exist yet
+#   cp .env.example .env && nano .env        # fill in every password
+#   docker compose up -d
+#
+# The other DESA stacks reach it as  desa-db:5432  over desa-network.
+# =============================================================================
+
+name: desa-db
+
+services:
+
+  # ---------------------------------------------------------------------------
+  # PostGIS
+  # ---------------------------------------------------------------------------
+  desa-db:
+    image: postgis/postgis:${POSTGIS_TAG:-16-3.5}
+    container_name: desa-db
+    restart: unless-stopped
+    shm_size: 1g                          # parallel index builds / big sorts
+
+    # Postgres needs time to checkpoint cleanly on shutdown.
+    stop_grace_period: 120s
+
+    environment:
+      POSTGRES_USER: ${POSTGRES_SUPERUSER:-postgres}
+      POSTGRES_PASSWORD: ${POSTGRES_SUPERUSER_PASSWORD:?set POSTGRES_SUPERUSER_PASSWORD in .env}
+      POSTGRES_DB: postgres
+      POSTGRES_INITDB_ARGS: "--auth-host=scram-sha-256 --auth-local=trust --data-checksums"
+      PGDATA: /var/lib/postgresql/data/pgdata
+
+      # Consumed by initdb/01-desa-init.sh on FIRST start only
+      ODC_DB: ${ODC_DB:-datacube}
+      ODC_ADMIN_USER: ${ODC_ADMIN_USER:-odc_admin}
+      ODC_ADMIN_PASSWORD: ${ODC_ADMIN_PASSWORD:?set ODC_ADMIN_PASSWORD in .env}
+      ODC_READER_USER: ${ODC_READER_USER:-odc_reader}
+      ODC_READER_PASSWORD: ${ODC_READER_PASSWORD:?set ODC_READER_PASSWORD in .env}
+      EXPLORER_USER: ${EXPLORER_USER:-odc_explorer}
+      EXPLORER_PASSWORD: ${EXPLORER_PASSWORD:?set EXPLORER_PASSWORD in .env}
+      GS_VECTOR_DB: ${GS_VECTOR_DB:-geoserver_vector}
+      GS_VECTOR_USER: ${GS_VECTOR_USER:-geoserver_app}
+      GS_VECTOR_PASSWORD: ${GS_VECTOR_PASSWORD:?set GS_VECTOR_PASSWORD in .env}
+
+    # Tuning for an EO index: few connections, large reads, big indexes.
+    # Values come from .env so the same file works on a small dev box and prod.
+    command:
+      - postgres
+      - -c
+      - max_connections=${PG_MAX_CONNECTIONS:-150}
+      - -c
+      - shared_buffers=${PG_SHARED_BUFFERS:-2GB}
+      - -c
+      - effective_cache_size=${PG_EFFECTIVE_CACHE_SIZE:-6GB}
+      - -c
+      - maintenance_work_mem=${PG_MAINTENANCE_WORK_MEM:-512MB}
+      - -c
+      - work_mem=${PG_WORK_MEM:-32MB}
+      - -c
+      - random_page_cost=1.1               # SSD
+      - -c
+      - effective_io_concurrency=200
+      - -c
+      - wal_compression=on
+      - -c
+      - max_wal_size=4GB
+      - -c
+      - checkpoint_completion_target=0.9
+      - -c
+      - log_min_duration_statement=2000    # log queries slower than 2 s
+      - -c
+      - log_connections=off
+      - -c
+      - password_encryption=scram-sha-256
+
+    volumes:
+      - desa_db_data:/var/lib/postgresql/data
+      - ./initdb:/docker-entrypoint-initdb.d:ro
+
+    # Not published by default – every DESA service talks to it over desa-network.
+    # To reach it from pgAdmin/QGIS on the LAN, uncomment and bind to the
+    # server's internal IP only (never 0.0.0.0).
+    # ports:
+    #   - "${DB_BIND_ADDR:-127.0.0.1}:${DB_HOST_PORT:-5432}:5432"
+
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U $${POSTGRES_USER} -d $${ODC_DB} -h 127.0.0.1"]
+      interval: 15s
+      timeout: 5s
+      retries: 10
+      start_period: 60s
+
+    networks:
+      - desa-network
+
+  # ---------------------------------------------------------------------------
+  # Nightly logical backups (daily / weekly / monthly rotation)
+  # ---------------------------------------------------------------------------
+  desa-db-backup:
+    image: prodrigestivill/postgres-backup-local:16
+    container_name: desa-db-backup
+    restart: unless-stopped
+    depends_on:
+      desa-db:
+        condition: service_healthy
+    environment:
+      POSTGRES_HOST: desa-db
+      POSTGRES_DB: ${ODC_DB:-datacube},${GS_VECTOR_DB:-geoserver_vector}
+      POSTGRES_USER: ${POSTGRES_SUPERUSER:-postgres}
+      POSTGRES_PASSWORD: ${POSTGRES_SUPERUSER_PASSWORD}
+      POSTGRES_EXTRA_OPTS: "-Z9 --format=custom --no-owner"
+      SCHEDULE: "${BACKUP_SCHEDULE:-0 1 * * *}"   # 01:00 container time
+      TZ: Africa/Johannesburg
+      BACKUP_KEEP_DAYS: ${BACKUP_KEEP_DAYS:-7}
+      BACKUP_KEEP_WEEKS: ${BACKUP_KEEP_WEEKS:-4}
+      BACKUP_KEEP_MONTHS: ${BACKUP_KEEP_MONTHS:-6}
+      BACKUP_SUFFIX: .dump
+      HEALTHCHECK_PORT: "8080"
+    volumes:
+      - ${BACKUP_DIR:-./backups}:/backups
+    networks:
+      - desa-network
+
+volumes:
+  desa_db_data:
+
+networks:
+  desa-network:
+    external: true

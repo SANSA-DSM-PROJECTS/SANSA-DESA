@@ -1,0 +1,377 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>{% block title %}{% endblock %}</title>
+    <meta name="viewport" content="initial-scale=1">
+    <link rel="stylesheet" href="{{ url_for('static', filename='base.css') }}">
+    <!-- Add the v6 core styles and then select the individual styles you need, like Solid and Brands -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='fontawesome-free-6.2.0-web/css/fontawesome.min.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='fontawesome-free-6.2.0-web/css/solid.min.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='fontawesome-free-6.2.0-web/css/regular.min.css') }}">
+
+    <link rel="icon" type="image/png"
+      href="https://desa.sansa.org.za/assets/img/favicon.png?v=2">
+    {% block head %}{% endblock %}
+
+<style>
+    /* =========================
+       DESA GLOBAL NAVBAR
+    ========================= */
+
+.desa-main-nav{
+    height:64px;
+    width:100vw;
+    background:#fff;
+    position:relative;
+    left:50%;
+    margin-left:-50vw;
+    z-index:9999;
+    border-bottom:1px solid rgba(0,0,0,.08);
+    box-shadow:0 2px 10px rgba(0,0,0,.05);
+    box-sizing:border-box;
+}
+
+    .desa-nav-inner{
+        max-width:1200px;
+        height:100%;
+        margin:0 auto;
+        padding:0 20px;
+        display:flex;
+        align-items:center;
+        justify-content:space-between;
+        box-sizing:border-box;
+    }
+
+    .desa-brand{
+        display:flex;
+        align-items:center;
+        height:100%;
+        text-decoration:none;
+    }
+
+    .desa-brand img{
+        height:50px;
+        width:auto;
+        display:block;
+    }
+
+    .desa-nav-links{
+        display:flex;
+        align-items:center;
+        gap:24px;
+        height:100%;
+        margin-left:60px;
+    }
+
+    .desa-nav-links a{
+        color:#0b2a57;
+        text-decoration:none;
+        font-family:"Segoe UI", Arial, sans-serif;
+        font-size:14px;
+        font-weight:600;
+        white-space:nowrap;
+    }
+
+    .desa-nav-links a:hover{
+        color:#1f66b3;
+    }
+
+    @media(max-width:900px){
+        .desa-main-nav{
+            height:auto;
+        }
+
+        .desa-nav-inner{
+            flex-direction:column;
+            align-items:flex-start;
+            padding:10px 16px;
+        }
+
+        .desa-nav-links{
+            width:100%;
+            gap:14px;
+            overflow-x:auto;
+            padding-bottom:8px;
+        }
+    }
+
+/* =========================================================
+   EXPLORER HEADER
+   ========================================================= */
+
+/* ODC logo has been removed */
+.header #logo {
+    display: none !important;
+}
+
+/* Make Explorer navigation bar compact */
+.header {
+    min-height: 54px !important;
+    height: 54px !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: flex-end !important;
+    box-sizing: border-box !important;
+}
+
+/* Keep Products / Types / Explore aligned */
+#menu-link {
+    display: flex !important;
+    align-items: center !important;
+    height: 54px !important;
+}
+
+#menu-link > ul {
+    margin: 0 !important;
+}
+</style>
+</head>
+{% macro hanchor(name) -%}
+    {% set _anchor=name | only_alnum %}
+    <a href="#{{ _anchor }}" class="header-anchor" id="{{ _anchor }}">🔗</a>
+{%- endmacro %}
+<body>
+
+<header class="desa-main-nav">
+    <div class="desa-nav-inner">
+
+        <a class="desa-brand" href="https://desa.sansa.org.za/">
+            <img
+                src="https://desa.sansa.org.za/assets/img/logo-desa.png"
+                alt="Digital Earth SA"
+            >
+        </a>
+
+        <nav class="desa-nav-links">
+            <a href="https://desa.sansa.org.za/">Home</a>
+            <a href="https://desa.sansa.org.za/about-us">About Us</a>
+            <a href="https://desa.sansa.org.za/analysis-ready-data">Analysis Ready Data</a>
+            <a href="https://desa.sansa.org.za/platforms">Platforms</a>
+            <a href="https://desa.sansa.org.za/decision-support-tools">Decision Support Tools</a>
+            <a href="https://desa.sansa.org.za/help">Help</a>
+            <a href="https://desa.sansa.org.za/contact">Contact Us</a>
+        </nav>
+
+    </div>
+</header>
+
+<!--[if IE]>
+<div class='message-box'>
+    <p>
+        Your version of Internet Explorer is unsupported (requires 11+).
+    </p>
+    <p>
+        <a href="http://www.mozilla.com/firefox">Firefox</a> or Chrome are recommended.
+    </p>
+</div>
+<![endif]-->
+
+<div class="content-wrapper">
+    <div class="header">
+        <div id="logo"></div>
+        <div id="menu-link">
+            <ul>
+                {%- if explorer_sister_instances -%}
+                <li id="sister-site-menu" class="top-menu ex-menu">
+                    <span class="ex-menu-title">Sister Sites</span>
+                    <ul>
+                        {% for site_title, site_link in explorer_sister_instances %}
+                            <li><a class="sister-link" href="{{site_link}}{{request.path}}">{{site_title}}</a></li>
+                        {% endfor %}
+                    </ul>
+                </li>
+                {%- endif -%}
+                <li class="top-menu ex-menu" id="products-menu">
+                    <span class="ex-menu-title">Products</span>
+                    <ul>
+                        {% for product in datacube_products %}
+                            {% if product.name not in hidden_product_list %}
+                                <li><a class="datacube-product-name" href="{{ url_for('pages.product_page', product_name=product.name) }}">{{ product.name }}</a></li>
+                            {% endif %}
+                        {% endfor %}
+                        {% if hidden_product_list %}
+                        <li><a id="show-hidden-product">Show hidden products</a></li>
+                        {% endif %}
+                        {% for product in datacube_products %}
+                            {% if product.name in hidden_product_list %}
+                                <li><a class="configured-hide-product hide" href="{{ url_for('pages.product_page', product_name=product.name) }}">{{ product.name }}</a></li>
+                            {% endif %}
+                        {% endfor %}
+                    </ul>
+                </li>
+                <li class="top-menu ex-menu">
+                    <span class="ex-menu-title">Types</span>
+                    <ul>
+                        {% for md_type in datacube_metadata_types %}
+                            <li><a href="{{ url_for('product.metadata_type_page', name=md_type.name) }}">{{ md_type.name }}</a></li>
+                        {% endfor %}
+                    </ul>
+                </li>
+                <li class="top-menu ex-menu">
+                    <span class="ex-menu-title">Explore</span>
+                    <ul class="left">
+                        <li><a href="{{url_for('pages.arrivals_page')}}">Recently Added</a></li>
+                        <li><a href="{{ url_for('product.storage_page') }}">Storage</a></li>
+                        <li><a href="{{ url_for('audit.datasets_metadata_page' )}}">Metadata Issues</a></li>
+                        <li><a href="{{ url_for('audit.products_overview_page' )}}">Products Overview</a></li>
+                        <li><a href="{{ url_for('audit.dscount_report_page') }}">Dataset Counts</a></li>
+                        <li><a href="{{ url_for('pages.about_page') }}">About Explorer</a></li>
+                    </ul>
+                </li>
+            </ul>
+        </div>
+    </div>
+    <div id="breadcrumb">
+        <a class="item" href="{{url_for('pages.default_redirect')}}">home</a>
+        {% if breadcrumb %}
+            {% for url, title, valid_link in breadcrumb %}
+                {% if valid_link %}
+                    >> <a class="item" href="{{url}}">{{title}}</a>
+                {% else %}
+                    >> <span class="item">{{title}}</span>
+                {% endif %}
+            {% endfor %}
+        {% endif %}
+    </div>
+    {% block header %}{% endblock %}
+    <div id="content">{% block content %}{% endblock %}</div>
+</div>
+<footer>
+    Open Data Cube v<span id="datacube-version">{{ datacube_version }}</span>,
+    Explorer v<span id="app-version">{{ app_version }}</span>, <span id="map-attribution-text"></span><br/>
+    {% if last_updated_time %}
+        Updated {{ last_updated_time | timesince }}
+    {% endif %}
+    {% block footer %}{% endblock %}
+    {% include 'include-footer.env.html' ignore missing %}
+    <div id="quiet-page-errors"></div>
+</footer>
+
+<script src="{{ url_for('static', filename='leaflet-1.7.1/leaflet.js') }}"></script>
+<script src="{{ url_for('static', filename='leaflet-groupedlayercontrol/leaflet.groupedlayercontrol.js') }}"></script>
+
+{% if sentry_public_dsn %}
+    <script src="https://cdn.ravenjs.com/3.26.4/raven.min.js" crossorigin="anonymous"></script>
+    <script>
+        Raven.config(
+            {{ sentry_public_dsn | tojson }},
+            {{ sentry_public_args | tojson}}
+        ).install();
+    </script>
+{% endif %}
+
+<!-- Environment includes -->
+{% include 'include-global.env.html' ignore missing %}
+<!-- End Environment includes -->
+{% block body_footer %}{% endblock %}
+<script>
+    // If there's a map on the page, add layer attribution in the footer.
+    (function () {
+        var map = window.MAP;
+        if (map) {
+            var attributionEl = document.getElementById('map-attribution-text');
+
+            function updateAttribution(e) {
+                var attributions = Object.keys(map._layers).map(function (name) {
+                    var layer = map._layers[name];
+                    if (layer.getAttribution) {
+                        return layer.getAttribution();
+                    }
+                    return null;
+                });
+                var isDefined = function (a) {
+                    return a !== null;
+                };
+                var attributionText = new DOMParser().parseFromString(
+                    attributions.filter(isDefined).join(', '),
+                    'text/html'
+                ).body.textContent;
+                attributionEl.innerHTML = attributionText || "";
+            }
+
+            map.on("layeradd", updateAttribution);
+            map.on("layerremove", updateAttribution);
+            updateAttribution();
+        }
+    })();
+
+    // Polyfill element.closest() for IE11: https://developer.mozilla.org/en-US/docs/Web/API/Element/closest
+    if (!Element.prototype.matches) {
+        Element.prototype.matches = Element.prototype.msMatchesSelector ||
+            Element.prototype.webkitMatchesSelector;
+    }
+    if (!Element.prototype.closest) {
+        Element.prototype.closest = function (s) {
+            var el = this;
+
+            do {
+                if (el.matches(s)) return el;
+                el = el.parentElement || el.parentNode;
+            } while (el !== null && el.nodeType === 1);
+            return null;
+        };
+    }
+
+    // When clicking elsewhere on page, close any open menus.
+    function outsideClickListener(event) {
+        // If it's not part of a header menu
+        if (event.target.closest('.ex-menu') === null) {
+            closeAllMenus();
+        }
+    }
+
+    function closeMenu(headerOption) {
+        headerOption.classList.remove('is-open');
+        headerOption.querySelector('.ex-menu-title').setAttribute('aria-expanded', "false");
+        document.removeEventListener('click', outsideClickListener);
+    }
+
+    function closeAllMenus() {
+        Array.prototype.forEach.call(
+            document.querySelectorAll('.ex-menu.is-open'),
+            closeMenu
+        )
+    }
+
+    // Click to open header menus.
+    Array.prototype.forEach.call(
+        document.querySelectorAll('.ex-menu'),
+        function (el, i) {
+            el.querySelector('.ex-menu-title').addEventListener("click", function (event) {
+                if (this.parentNode.classList.contains("is-open")) {
+                    closeMenu(this.parentNode);
+                } else {
+                    closeAllMenus();
+                    // Open header
+                    this.parentNode.classList.add('is-open');
+                    this.setAttribute('aria-expanded', "true");
+                    document.addEventListener('click', outsideClickListener)
+                }
+                event.preventDefault();
+                return false;
+            });
+        }
+    );
+
+    var showHiddenProduct = document.getElementById("show-hidden-product");
+    if (showHiddenProduct) {
+        showHiddenProduct.addEventListener("click", function(event) {
+            if (showHiddenProduct.innerHTML === "Show hidden products") {
+                showHiddenProduct.innerHTML = "Show non-hidden products";
+            } else {
+                showHiddenProduct.innerHTML = "Show hidden products";
+            }
+            document.querySelectorAll(".datacube-product-name").forEach(function(el) {
+                el.classList.toggle("hide");
+            });
+            document.querySelectorAll(".configured-hide-product").forEach(function(el) {
+                el.classList.toggle("hide");
+            });
+        });
+    }
+
+</script>
+</body>
+</html>

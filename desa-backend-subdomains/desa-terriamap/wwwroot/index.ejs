@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="en" class="terria">
+  <head>
+    <base href="<%= baseHref %>" />
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge,chrome=1" />
+    <!-- Use Chrome Frame in IE -->
+    <meta
+      name="viewport"
+      content="width=device-width, height=device-height, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no"
+    />
+    <meta name="description" content="A web map built on Terria Map" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+
+    <link
+      rel="apple-touch-icon"
+      sizes="57x57"
+      href="favicons/apple-icon-57x57.png"
+    />
+    <link
+      rel="apple-touch-icon"
+      sizes="60x60"
+      href="favicons/apple-icon-60x60.png"
+    />
+    <link
+      rel="apple-touch-icon"
+      sizes="72x72"
+      href="favicons/apple-icon-72x72.png"
+    />
+    <link
+      rel="apple-touch-icon"
+      sizes="76x76"
+      href="favicons/apple-icon-76x76.png"
+    />
+    <link
+      rel="apple-touch-icon"
+      sizes="114x114"
+      href="favicons/apple-icon-114x114.png"
+    />
+    <link
+      rel="apple-touch-icon"
+      sizes="120x120"
+      href="favicons/apple-icon-120x120.png"
+    />
+    <link
+      rel="apple-touch-icon"
+      sizes="144x144"
+      href="favicons/apple-icon-144x144.png"
+    />
+    <link
+      rel="apple-touch-icon"
+      sizes="152x152"
+      href="favicons/apple-icon-152x152.png"
+    />
+    <link
+      rel="apple-touch-icon"
+      sizes="180x180"
+      href="favicons/apple-icon-180x180.png"
+    />
+    <link
+      rel="icon"
+      type="image/png"
+      sizes="192x192"
+      href="favicons/android-icon-192x192.png"
+    />
+    <link
+      rel="icon"
+      type="image/png"
+      sizes="32x32"
+      href="favicons/favicon-32x32.png"
+    />
+    <link
+      rel="icon"
+      type="image/png"
+      sizes="96x96"
+      href="favicons/favicon-96x96.png"
+    />
+    <link
+      rel="icon"
+      type="image/png"
+      sizes="16x16"
+      href="favicons/favicon-16x16.png"
+    />
+    <link rel="manifest" href="favicons/manifest.json" />
+    <meta name="msapplication-TileColor" content="#282D32" />
+    <meta
+      name="msapplication-TileImage"
+      content="favicons/ms-icon-144x144.png"
+    />
+    <meta name="theme-color" content="#282D32" />
+
+    <title>Terria Map</title>
+
+    <!-- Leaflet -->
+    <script>
+      L_PREFER_CANVAS = true;
+    </script>
+
+<style>
+
+  /* =========================
+     DESA TERRIA NAVIGATION
+  ========================= */
+
+  .desa-main-nav {
+    height: 72px;
+    width: 100%;
+    background: #ffffff;
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 999999;
+    box-shadow: 0 2px 12px rgba(0,0,0,.08);
+  }
+
+  .desa-nav-inner {
+    max-width: 1200px;
+    height: 100%;
+    margin: 0 auto;
+    padding: 0 24px;
+
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .desa-brand {
+    display: flex;
+    align-items: center;
+    height: 100%;
+  }
+
+  .desa-brand img {
+    width: 90px;
+    height: auto;
+    display: block;
+  }
+
+  .desa-nav-links {
+    display: flex;
+    align-items: center;
+    height: 100%;
+    gap: 30px;
+  }
+
+  .desa-nav-links a {
+    position: relative;
+    color: #0b2a57;
+    text-decoration: none;
+    font-family: Arial, sans-serif;
+    font-size: 14px;
+    font-weight: 500;
+    white-space: nowrap;
+  }
+
+  .desa-nav-links a:hover {
+    color: #1f66b3;
+  }
+
+  .desa-nav-links a.active {
+    color: #0b2a57;
+  }
+
+  .desa-nav-links a.active::after {
+    content: "";
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: -25px;
+    height: 3px;
+    background: #1f66b3;
+  }
+
+  /*
+   * Move TerriaJS below DESA navbar
+   */
+  #ui {
+    position: fixed;
+    top: 72px;
+    left: 0;
+    right: 0;
+    bottom: 0;
+  }
+
+</style>
+
+  </head>
+
+  <body>
+
+<header class="desa-main-nav">
+  <div class="desa-nav-inner">
+
+<a class="desa-brand" href="https://desa.sansa.org.za/">
+  <img src="images/desa_logo.PNG" alt="Digital Earth SA">
+</a>
+
+<nav class="desa-nav-links">
+  <a href="https://desa.sansa.org.za/">Home</a>
+  <a href="https://desa.sansa.org.za/about-us">About Us</a>
+  <a href="https://desa.sansa.org.za/analysis-ready-data">Analysis Ready Data</a>
+  <a href="https://desa.sansa.org.za/platforms" class="active">Platforms</a>
+  <a href="https://desa.sansa.org.za/decision-support-tools">Decision Support Tools</a>
+  <a href="https://desa.sansa.org.za/help">Help</a>
+  <a href="https://desa.sansa.org.za/contact">Contact Us</a>
+</nav>
+
+  </div>
+</header>
+
+<div id="ui"></div>
+
+<script src="build/TerriaMap.js"></script>
+
+    <div id="svg-sprites" style="display: none"></div>
+    <div id="ui"></div>
+  </body>
+</html>

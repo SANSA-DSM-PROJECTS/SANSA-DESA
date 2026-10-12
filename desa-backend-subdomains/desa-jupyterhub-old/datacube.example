@@ -1,0 +1,22 @@
+[datacube]
+db_hostname: 
+db_database: 
+db_username: 
+db_password: 
+index_driver: default
+
+[experimental]
+db_hostname: 
+db_database: 
+db_username: 
+db_password: 
+index_driver: 
+
+[no_such_driver_env]
+index_driver: no_such_driver
+
+[null_driver]
+index_driver: null
+
+[local_memory]
+index_driver: memory

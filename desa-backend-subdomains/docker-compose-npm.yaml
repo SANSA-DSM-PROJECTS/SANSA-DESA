@@ -1,0 +1,116 @@
+services:
+  # Static UI
+  desa-ui:
+    build: ./desa-ui
+    image: desa-ui
+    container_name: desa-ui
+    restart: unless-stopped
+
+  # OpenDataCube Explorer
+  desa-explorer:
+    image: opendatacube/explorer:latest
+    container_name: desa-explorer
+    environment:
+      DB_HOSTNAME: "${PGDB_HOSTNAME}"
+      DB_USERNAME: "${PGDB_USERNAME}"
+      DB_PASSWORD: "${PGDB_PASSWORD}"
+      DB_DATABASE: "${PGDB_DATABASE}"
+      DB_PORT: "5432"
+      FLASK_ENV: deployment
+      FLASK_APP: cubedash
+      FLASK_DEBUG: 0
+      CUBEDASH_DEFAULT_TIMEZONE: Africa/Johannesburg
+    restart: unless-stopped
+    depends_on:
+      - desa-postgres
+
+  # JupyterHub
+  desa-jupyterhub:
+    build: ./desa-jupyterhub
+    image: jupyter
+    container_name: desa-jupyterhub
+    environment:
+      AWS_NO_SIGN_REQUEST: true
+      AWS_DEFAULT_REGION: af-south-1
+      DATACUBE_DB_URL: postgresql://${PGDB_USERNAME}:${PGDB_PASSWORD}@${PGDB_HOSTNAME}/${PGDB_DATABASE}
+    volumes:
+      - ./desa-jupyterhub/jupyterhub_config.py:/srv/jupyterhub/jupyterhub_config.py
+      - jupyterhub_data:/srv/jupyterhub/data
+      - ./desa-jupyterhub/jupyterhub.key:/srv/jupyterhub/jupyterhub.key:ro
+      - ./desa-jupyterhub/jupyterhub.crt:/srv/jupyterhub/jupyterhub.crt:ro
+    restart: unless-stopped
+    depends_on:
+      - desa-postgres
+
+  # TerriaMap
+  desa-terriamap:
+    build: ./desa-terriamap
+    image: terriamap
+    container_name: desa-terriamap
+    restart: unless-stopped
+
+  # PostgreSQL / PostGIS
+  desa-postgres:
+    image: postgis/postgis:16-3.4
+    container_name: desa-postgres
+    hostname: "${PGDB_HOSTNAME}"
+    environment:
+      POSTGRES_DB: "${PGDB_DATABASE}"
+      POSTGRES_PASSWORD: "${PGDB_PASSWORD}"
+      POSTGRES_USER: "${PGDB_USERNAME}"
+    expose:
+      - "5432"
+    restart: always
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U $${POSTGRES_USER} -d $${POSTGRES_DB}"]
+      timeout: 45s
+      interval: 10s
+      retries: 10
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+  # pgAdmin
+  desa-pgadmin:
+    image: dpage/pgadmin4
+    container_name: desa-pgadmin
+    restart: always
+    environment:
+      PGADMIN_DEFAULT_EMAIL: "${PGADMIN_EMAIL}"
+      PGADMIN_DEFAULT_PASSWORD: "${PGADMIN_PASSWORD}"
+    depends_on:
+      - desa-postgres
+    volumes:
+      - pgadmin_data:/var/lib/pgadmin
+
+  # OWS
+  desa-ows:
+    image: opendatacube/ows:1.8.0-rc1
+    container_name: desa-ows
+    environment:
+      DB_HOSTNAME: "${PGDB_HOSTNAME}"
+      DB_USERNAME: "${PGDB_USERNAME}"
+      DB_PASSWORD: "${PGDB_PASSWORD}"
+      DB_DATABASE: "${PGDB_DATABASE}"
+      DB_PORT: 5432
+      AWS_DEFAULT_REGION: "${AWS_REGION}"
+      AWS_NO_SIGN_REQUEST: "${AWS_NO_SIGN_REQUEST}"
+      PYTHONPATH: /env/config
+      DATACUBE_OWS_CFG: ows_refactored.dev_af_ows_root_cfg.ows_cfg
+    restart: unless-stopped
+    depends_on:
+      - desa-postgres
+    volumes:
+      - ./desa-ows/products:/products
+      - ./desa-ows/services/ows_refactored:/env/config/ows_refactored/
+      - ./desa-ows/services/inventory:/env/config/inventory/
+      - ./desa-ows/output:/env/config/output/
+
+networks:
+  default:
+    external: true
+    name: eo-staging-network
+
+volumes:
+  jupyterhub_data:
+  postgres_data:
+  pgadmin_data:

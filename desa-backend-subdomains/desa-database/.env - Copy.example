@@ -1,0 +1,46 @@
+# =============================================================================
+# desa-db – copy to .env and fill in. Never commit .env.
+# Generate passwords with:  openssl rand -base64 24 | tr -d '/+='
+# =============================================================================
+
+POSTGIS_TAG=16-3.5
+
+# --- Superuser (admin/backups only – no application uses this) --------------
+POSTGRES_SUPERUSER=postgres
+POSTGRES_SUPERUSER_PASSWORD=
+
+# --- ODC index database --------------------------------------------------------
+ODC_DB=datacube
+ODC_ADMIN_USER=odc_admin          # system init, product add, dataset add
+ODC_ADMIN_PASSWORD=
+ODC_READER_USER=odc_reader        # OWS, JupyterHub
+ODC_READER_PASSWORD=
+EXPLORER_USER=odc_explorer        # ODC Explorer (owns cubedash schema)
+EXPLORER_PASSWORD=
+
+# --- GeoServer vector database ---------------------------------------------
+GS_VECTOR_DB=geoserver_vector
+GS_VECTOR_USER=geoserver_app
+GS_VECTOR_PASSWORD=
+
+# --- Tuning (prod defaults; halve them on a small dev box) -----------------
+PG_MAX_CONNECTIONS=150
+PG_SHARED_BUFFERS=2GB             # ~25% of RAM given to the DB
+PG_EFFECTIVE_CACHE_SIZE=6GB       # ~75% of RAM given to the DB
+PG_MAINTENANCE_WORK_MEM=512MB
+PG_WORK_MEM=32MB
+
+# --- Backups ----------------------------------------------------------------
+BACKUP_DIR=./backups              # ideally a different disk / NFS mount
+BACKUP_SCHEDULE=0 1 * * *
+BACKUP_KEEP_DAYS=7
+BACKUP_KEEP_WEEKS=4
+BACKUP_KEEP_MONTHS=6
+
+# --- Migration source (copy from the CURRENT datacube.conf) -----------------
+# Only needed for scripts/migrate-from-remote.sh; delete afterwards.
+OLD_DB_HOST=
+OLD_DB_PORT=5432
+OLD_DB_NAME=datacube
+OLD_DB_USER=
+OLD_DB_PASSWORD=

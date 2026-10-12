@@ -1,42 +1,25 @@
 {
   "port": 3001,
 
+  // TerriaMap's server-side proxy (/proxy/...) is only a fallback for data
+  // servers that do NOT send CORS headers. DESA's own services (OWS and
+  // GeoServer) send CORS headers and are listed in "corsDomains" in
+  // wwwroot/init/simple.json, so the browser calls them directly and they
+  // must NOT be proxied.
+  //
+  // Keep this list to external hosts you actually need proxied. Anything
+  // listed here can be fetched through the map server by any visitor, so
+  // a broad entry like "sansa.org.za" would let the public reach internal
+  // SANSA hosts through the map (server-side request forgery).
   "allowProxyFor": [
-    "sansa.org.za",
-    "githubusercontent.com",
-    "desa.sansa.org.za",
-    "desa-ows.sansa.org.za",
-
-    // NOTE: The following default entries are deprecated and will be removed in a future release. If you rely ony terria proxying to any of these servers, please add them through a custom serverconfig.json. See https://docs.terria.io/guide/getting-started/#customizing-terriamap
-    "nicta.com.au",
-    "gov.au",
-    "csiro.au",
-    "argo.jcommops.org",
-    "www.abc.net.au",
-    "geoserver.aurin.org.au",
-    "mapsengine.google.com",
-    "s3-ap-southeast-2.amazonaws.com",
-    "adelaidecitycouncil.com",
-    "www.dptiapps.com.au",
-    "geoserver-123.aodn.org.au",
-    "geoserver.imos.org.au",
-    "nci.org.au",
-    "static.nationalmap.nicta.com.au",
-    "gov",
-    "gov.uk",
-    "gov.nz",
-    "services.aremi.data61.io"
+    "githubusercontent.com"
   ],
 
-  // terriajs-server's proxy checks the RESOLVED address of every proxy target
-  // against this list (DNS-rebinding protection), independent of allowProxyFor
-  // above. desa-ows.sansa.org.za and the GeoServer host resolve internally to
-  // addresses in 10.150.16.0/24 (the SANSA private network these DESA backend
-  // services run on), so the default "10.0.0.0/8" entry blocked all proxying
-  // to them with "403 IP address is not allowed". This is the same default
-  // list as terriajs-server/serverconfig.json.example, with 10.0.0.0/8
-  // replaced by its complement minus 10.150.16.0/24, so only that specific
-  // subnet is exempted and the rest of the private 10.x range stays blocked.
+  // Upstream default deny-list (terriajs-server/serverconfig.json.example),
+  // restored in full. The earlier exemptions for 10.150.16.0/24 and the
+  // compose network 172.19.0.0/16 only existed so the proxy could reach
+  // DESA services; that is no longer needed, and they exposed the internal
+  // network through the proxy.
   "blacklistedAddresses": [
     // loopback addresses
     "127.0.0.0/8",
@@ -44,23 +27,8 @@
     // link local addresses
     "169.254.0.0/16",
     "fe80::/10",
-    // private network addresses (10.0.0.0/8 minus 10.150.16.0/24)
-    "10.0.0.0/9",
-    "10.128.0.0/12",
-    "10.144.0.0/14",
-    "10.148.0.0/15",
-    "10.150.0.0/20",
-    "10.150.17.0/24",
-    "10.150.18.0/23",
-    "10.150.20.0/22",
-    "10.150.24.0/21",
-    "10.150.32.0/19",
-    "10.150.64.0/18",
-    "10.150.128.0/17",
-    "10.151.0.0/16",
-    "10.152.0.0/13",
-    "10.160.0.0/11",
-    "10.192.0.0/10",
+    // private network addresses
+    "10.0.0.0/8",
     "172.16.0.0/12",
     "192.168.0.0/16",
     "fc00::/7",

@@ -1,0 +1,372 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>DESA | Analysis Ready Data</title>
+  <link rel="stylesheet" href="assets/css/style.css" />
+</head>
+<body>
+
+  <!-- NAV (same as Home/About) -->
+  <header class="nav">
+    <div class="nav-inner">
+      <a class="brand" href="/" aria-label="DESA Home">
+        <img src="assets/img/logo-desa.png" alt="Digital Earth SA Logo">
+      </a>
+
+      <nav class="nav-links">
+        <a href="/" data-nav>Home</a>
+        <a href="/about-us" data-nav>About Us</a>
+        <a href="/analysis-ready-data" class="active" data-nav>Analysis Ready Data</a>
+        <a href="/platforms" data-nav>Platforms</a>
+        <a href="/decision-support-tools" data-nav>Decision Support Tools</a>
+        <!-- <a href="/value-added-products" data-nav>Value Added Products</a> -->
+		<a href="/help">Help</a>
+		<a href="/contact">Contact Us</a>
+      </nav>
+    </div>
+  </header>
+
+  <!-- HERO -->
+  <section class="hero hero-ard">
+    <div class="hero-content center">
+      <h1>Analysis Ready Data</h1>
+      <p>
+        Pre-processed Earth Observation datasets designed to reduce preparation time and support faster, more
+        consistent analysis.
+      </p>
+    </div>
+  </section>
+
+  <!-- INTRO (Text + Video) -->
+  <section class="section" id="ard-intro">
+    <h2>What is Analysis Ready Data (ARD)?</h2>
+    <p class="lead">
+      SPOT Analysis-Ready Data (ARD) enables users to analyse and extract information from satellite datasets
+      while reducing the burden of data pre-processing.
+    </p>
+
+    <div class="two-col">
+      <div class="callout">
+        <p>
+          The analysis-ready dataset is standardised, harmonised, interoperable, radiometrically consistent
+          (BRDF corrected), geometrically consistent, and conforms to commonly used ARD specifications for
+          efficient and effective data analysis.
+        </p>
+
+        <div class="cta-row">
+          <a class="btn primary" href="platforms.html">Explore Platforms</a>
+          <a class="btn secondary" href="#spot-info">Learn about SPOT</a>
+        </div>
+      </div>
+
+      <div class="media">
+        <div class="video-frame">
+  <video autoplay muted loop playsinline preload="metadata">
+    <source src="assets/vid/ard.mp4" type="video/mp4">
+    Your browser does not support the video tag.
+  </video>
+</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SATELLITES -->
+  <section class="section section-light">
+    <h2>SPOT Satellites</h2>
+    <p class="lead">
+      DESA’s ARD is derived from SPOT satellite scenes processed to a consistent standard, ready for analysis and integration.
+    </p>
+
+    <div class="satellite-grid">
+      <div class="satellite-card">
+        <img src="assets/img/spot-5.jpg" alt="SPOT 5 satellite">
+        <h3>SPOT 5</h3>
+        <p>Medium-to-high resolution data suitable for a wide range of thematic applications.</p>
+      </div>
+
+      <div class="satellite-card">
+        <img src="assets/img/spot-6-7.png" alt="SPOT 6/7 satellite">
+        <h3>SPOT 6/7</h3>
+        <p>Higher-resolution imagery supporting mapping and monitoring at finer detail.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- MORE INFO + PRODUCTS -->
+  <section class="section" id="spot-info">
+    <h2>More Information on SPOT</h2>
+    <p class="lead">
+      SPOT (Satellite Pour l’Observation de la Terre) satellites have provided medium to high-resolution data useful for various thematic applications since 1980s.
+    </p>
+
+    <div class="note-block">
+      <p>
+        The SPOT ARD product is standardised, harmonised, interoperable, radiometrically (BRDF corrected) and geometrically consistent,
+        and pre-processed to reduce the burden of data preparation for immediate analysis.
+      </p>
+    </div>
+
+    <div class="info-grid">
+      <div class="info-card">
+        <h3>Common ARD Products</h3>
+        <ul>
+          <li><strong>Pan-sharpened NBAR</strong> (fusion of Panchromatic + Multispectral bands)</li>
+          <li><strong>Multispectral NBAR</strong> (BRDF-adjusted reflectance)</li>
+          <li><strong>Classification-ready layers</strong> (features like vegetation/cloud masking)</li>
+        </ul>
+      </div>
+
+      <div class="info-card">
+        <h3>Why It Matters</h3>
+        <ul>
+          <li>Less time on preprocessing</li>
+          <li>More consistent comparisons over time</li>
+          <li>Better interoperability across tools and workflows</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- TABLE -->
+  <section class="section section-light">
+    <h2>SPOT Satellite Information</h2>
+    <p class="lead">High-level overview of SPOT missions and typical specifications.</p>
+
+    <div class="table-wrap">
+      <table class="desa-table">
+        <thead>
+          <tr>
+            <th>Satellite</th>
+            <th>Bands</th>
+            <th>Spatial Resolution</th>
+            <th>Launched</th>
+            <th>Decommissioned</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>SPOT 2</td>
+            <td>Pan, G, R, NIR</td>
+            <td>Pan (10m); MS (20m)</td>
+            <td>22 January 1990</td>
+            <td>July 2009</td>
+          </tr>
+          <tr>
+            <td>SPOT 3</td>
+            <td>Pan, G, R, NIR</td>
+            <td>Pan (10m); MS (20m)</td>
+            <td>26 September 1993</td>
+            <td>14 November 1997</td>
+          </tr>
+          <tr>
+            <td>SPOT 4</td>
+            <td>Pan, G, R, NIR</td>
+            <td>Pan (10m); MS (20m)</td>
+            <td>24 March 1998</td>
+            <td>July 2013</td>
+          </tr>
+          <tr>
+            <td>SPOT 5</td>
+            <td>Pan, G, R, NIR, SWIR</td>
+            <td>Pan (2.5–5m); MS (10–20m)</td>
+            <td>4 May 2002</td>
+            <td>March 2015</td>
+          </tr>
+          <tr>
+            <td>SPOT 6/7</td>
+            <td>Pan, B, G, R, NIR</td>
+            <td>Pan (1.5m); MS (6m)</td>
+            <td>9 Sep 2012 / 30 Jun 2014</td>
+            <td>Operational</td>
+          </tr>
+        </tbody>
+      </table>
+      <div class="table-caption">Table: SPOT mission overview (high-level).</div>
+    </div>
+  </section>
+  
+  <!-- SATELLITE MISSION TIMELINE -->
+  <section class="section reveal">
+    <h2>Satellite Mission Timeline</h2>
+    <p class="lead">
+      A simplified timeline of key SPOT and Landsat missions that support the long-term Earth Observation archive used in DESA.
+    </p>
+
+    <div class="timeline">
+
+      <div class="timeline-item reveal" data-delay="1">
+        <div class="timeline-year">1990</div>
+        <div class="timeline-content">
+          <h3>SPOT 2</h3>
+          <p>Provided medium-resolution Earth Observation imagery supporting early environmental monitoring and mapping.</p>
+        </div>
+      </div>
+
+      <div class="timeline-item reveal" data-delay="2">
+        <div class="timeline-year">1993</div>
+        <div class="timeline-content">
+          <h3>SPOT 3</h3>
+          <p>Expanded continuity of SPOT imagery for land monitoring and thematic analysis.</p>
+        </div>
+      </div>
+
+      <div class="timeline-item reveal" data-delay="3">
+        <div class="timeline-year">1998</div>
+        <div class="timeline-content">
+          <h3>SPOT 4</h3>
+          <p>Improved observation capability for vegetation, land cover, and environmental monitoring.</p>
+        </div>
+      </div>
+
+      <div class="timeline-item reveal" data-delay="4">
+        <div class="timeline-year">2002</div>
+        <div class="timeline-content">
+          <h3>SPOT 5</h3>
+          <p>Delivered higher-quality imagery widely used for agriculture, planning, and natural resource applications.</p>
+        </div>
+      </div>
+
+      <div class="timeline-item reveal" data-delay="1">
+        <div class="timeline-year">2012–2014</div>
+        <div class="timeline-content">
+          <h3>SPOT 6/7</h3>
+          <p>Higher-resolution data supporting more detailed mapping, infrastructure analysis, and urban applications.</p>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ARD WORKFLOW -->
+  <section class="section section-light reveal">
+    <h2>ARD Processing Workflow</h2>
+    <p class="lead">
+      Raw satellite imagery is transformed into Analysis Ready Data through a structured workflow that improves consistency, usability, and interoperability.
+    </p>
+
+    <div class="workflow-grid">
+
+      <div class="workflow-step reveal" data-delay="1">
+        <div class="workflow-icon">1</div>
+        <h3>Acquisition</h3>
+        <p>Satellite sensors capture raw Earth Observation imagery over time.</p>
+      </div>
+
+      <div class="workflow-step reveal" data-delay="2">
+        <div class="workflow-icon">2</div>
+        <h3>Preprocessing</h3>
+        <p>Data is corrected for geometry, radiometry, and atmospheric effects.</p>
+      </div>
+
+      <div class="workflow-step reveal" data-delay="3">
+        <div class="workflow-icon">3</div>
+        <h3>Standardisation</h3>
+        <p>Imagery is harmonised into consistent ARD specifications and formats.</p>
+      </div>
+
+      <div class="workflow-step reveal" data-delay="4">
+        <div class="workflow-icon">4</div>
+        <h3>Ingestion</h3>
+        <p>Prepared datasets are loaded into DESA platforms and the Data Cube.</p>
+      </div>
+
+      <div class="workflow-step reveal" data-delay="1">
+        <div class="workflow-icon">5</div>
+        <h3>Access</h3>
+        <p>Users explore, analyse, and download ARD through services and tools.</p>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- INTERACTIVE DATASET CARDS -->
+  <section class="section reveal">
+    <h2>Featured ARD Collections</h2>
+    <p class="lead">
+      Explore key datasets available through DESA. These cards can later connect to live metadata, downloads, or platform views.
+    </p>
+
+    <div class="dataset-grid">
+
+      <div class="dataset-card reveal" data-delay="1">
+        <div class="dataset-top">
+          <span class="dataset-badge">SPOT ARD</span>
+          <span class="dataset-status">Available</span>
+        </div>
+        <h3>SPOT Analysis Ready Data</h3>
+        <p>
+          Preprocessed SPOT imagery prepared for faster land analysis, planning, and environmental applications.
+        </p>
+        <div class="dataset-meta">
+          <span>Resolution: 2.5m–20m</span>
+          <span>Format: ARD</span>
+        </div>
+        <div class="dataset-actions">
+          <a href="platforms.html" class="btn primary">Open Platform</a>
+          <a href="#spot-info" class="btn secondary">View Details</a>
+        </div>
+      </div>
+
+      <div class="dataset-card reveal" data-delay="2">
+        <div class="dataset-top">
+          <span class="dataset-badge">Landsat</span>
+          <span class="dataset-status">Archive</span>
+        </div>
+        <h3>Landsat Time-Series Data</h3>
+        <p>
+          Long-term Earth Observation archive supporting land cover change, environmental monitoring, and historical analysis.
+        </p>
+        <div class="dataset-meta">
+          <span>Resolution: 30m</span>
+          <span>Format: ARD-ready</span>
+        </div>
+        <div class="dataset-actions">
+          <a href="platforms.html" class="btn primary">Explore Data</a>
+          <a href="#" class="btn secondary">Metadata</a>
+        </div>
+      </div>
+
+      <div class="dataset-card reveal" data-delay="3">
+        <div class="dataset-top">
+          <span class="dataset-badge">Data Cube</span>
+          <span class="dataset-status">Integrated</span>
+        </div>
+        <h3>Data Cube Collections</h3>
+        <p>
+          Structured ARD collections ingested into the DESA Data Cube for scalable analysis and decision support workflows.
+        </p>
+        <div class="dataset-meta">
+          <span>Access: Platform</span>
+          <span>Use: Analysis</span>
+        </div>
+        <div class="dataset-actions">
+          <a href="platforms.html" class="btn primary">Launch Cube</a>
+          <a href="#" class="btn secondary">Documentation</a>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer class="footer">
+    <div class="footer-inner footer-logos">
+      <div class="footer-logo left">
+        <img src="assets/img/logo-dsti.jpg" alt="DSTI Logo">
+      </div>
+
+      <div class="footer-center">
+        © <span id="year">2026</span> Digital Earth South Africa | SANSA
+      </div>
+
+      <div class="footer-logo right">
+        <img src="assets/img/logo-sansa.jpg" alt="SANSA Logo">
+      </div>
+    </div>
+  </footer>
+
+  <script src="assets/js/main.js" defer></script>
+</body>
+</html>

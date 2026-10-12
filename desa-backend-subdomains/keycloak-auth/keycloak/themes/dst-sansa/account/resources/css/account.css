@@ -1,0 +1,98 @@
+/* SANSA brand — Montserrat, self-hosted (brand manual p.14). */
+@font-face {
+    font-family: "Montserrat";
+    font-style: normal;
+    font-weight: 400;
+    font-display: swap;
+    src: url("../fonts/montserrat-latin-400-normal.woff2") format("woff2");
+}
+@font-face {
+    font-family: "Montserrat";
+    font-style: normal;
+    font-weight: 500;
+    font-display: swap;
+    src: url("../fonts/montserrat-latin-500-normal.woff2") format("woff2");
+}
+@font-face {
+    font-family: "Montserrat";
+    font-style: normal;
+    font-weight: 600;
+    font-display: swap;
+    src: url("../fonts/montserrat-latin-600-normal.woff2") format("woff2");
+}
+@font-face {
+    font-family: "Montserrat";
+    font-style: normal;
+    font-weight: 700;
+    font-display: swap;
+    src: url("../fonts/montserrat-latin-700-normal.woff2") format("woff2");
+}
+@font-face {
+    font-family: "Montserrat";
+    font-style: normal;
+    font-weight: 800;
+    font-display: swap;
+    src: url("../fonts/montserrat-latin-800-normal.woff2") format("woff2");
+}
+
+/* Apply the brand font across the account console. */
+:root {
+    --pf-global--FontFamily--sans-serif: "Montserrat", system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    --pf-t--global--font--family--body: "Montserrat", system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    --pf-t--global--font--family--heading: "Montserrat", system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+}
+
+body, .pf-v5-c-page, .pf-v6-c-page, button, input, select, textarea {
+    font-family: "Montserrat", system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+}
+
+header a[href*="referrer_uri"],
+.pf-v5-c-page__header a[href*="referrer_uri"],
+.pf-v6-c-page__header a[href*="referrer_uri"] {
+    display: inline-flex !important;
+    align-items: center !important;
+
+    padding: 8px 16px !important;
+
+    color: #1A315C !important;
+    background-color: #ffffff !important;
+
+    border: none !important;
+    border-radius: 10px !important;
+
+    font-weight: 700 !important;
+    text-decoration: none !important;
+
+    line-height: 1.4 !important;
+}
+
+header a[href*="referrer_uri"]:hover,
+header a[href*="referrer_uri"]:focus,
+.pf-v5-c-page__header a[href*="referrer_uri"]:hover,
+.pf-v5-c-page__header a[href*="referrer_uri"]:focus,
+.pf-v6-c-page__header a[href*="referrer_uri"]:hover,
+.pf-v6-c-page__header a[href*="referrer_uri"]:focus {
+    color: #1A315C !important;
+    background-color: #f1f4f7 !important;
+    text-decoration: none !important;
+}
+
+/* ---------------------------------------------------------------------
+   Enlarge the SANSA logo in the account-console masthead.
+   The logo is an <img> inside the masthead brand; target every PatternFly
+   version plus the generic alt="Logo" image so it applies regardless of
+   which markup Keycloak renders.
+   --------------------------------------------------------------------- */
+.pf-v5-c-masthead__brand img,
+.pf-v6-c-masthead__brand img,
+.pf-v5-c-brand,
+.pf-v6-c-brand,
+header .pf-v5-c-brand,
+header .pf-v6-c-brand,
+header img[alt="Logo"],
+.pf-v5-c-masthead img[alt="Logo"],
+.pf-v6-c-masthead img[alt="Logo"] {
+    height: 64px !important;
+    max-height: 64px !important;
+    width: auto !important;
+}

@@ -1,0 +1,96 @@
+# =========================================================================
+# Keycloak — PRODUCTION stack.
+#
+# Differs from docker-compose.yml (dev) in that it runs Keycloak in production
+# mode, bakes themes/realm into the image, externalises all secrets, and does
+# not expose the database. Secrets come from .env.prod (see .env.prod.example).
+#
+# Run:
+#   docker compose --env-file .env.prod -f docker-compose.prod.yml up -d --build
+# =========================================================================
+
+services:
+  postgres:
+    image: postgres:15.8
+    container_name: keycloak_postgres
+    restart: always
+    # No published port in prod — the DB is only reachable on the internal
+    # docker network, never from the host/LAN.
+    expose:
+      - "5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    environment:
+      POSTGRES_DB: ${KC_DB_NAME}
+      POSTGRES_USER: ${KC_DB_USER}
+      POSTGRES_PASSWORD: ${KC_DB_PASSWORD}
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${KC_DB_USER} -d ${KC_DB_NAME}"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+    networks:
+      - keycloak-internal
+
+  keycloak:
+    build:
+      context: ./keycloak
+    image: sansa-keycloak:prod
+    container_name: keycloak
+    restart: always
+
+    # Production mode. --optimized skips the build step at startup because the
+    # image was already built (kc.sh build) with KC_DB / health / metrics baked
+    # in via the Dockerfile. --import-realm imports sansa-dst only if absent.
+    command:
+      - start
+      - --optimized
+      - --import-realm
+
+    environment:
+      # Database (values from .env.prod)
+      KC_DB: postgres
+      KC_DB_URL: jdbc:postgresql://keycloak_postgres:5432/${KC_DB_NAME}
+      KC_DB_USERNAME: ${KC_DB_USER}
+      KC_DB_PASSWORD: ${KC_DB_PASSWORD}
+
+      # Public hostname + reverse-proxy settings
+      KC_HOSTNAME: ${KC_HOSTNAME}
+      KC_HOSTNAME_STRICT: "true"
+      KC_HTTP_ENABLED: "true"       # nginx terminates TLS, forwards HTTP internally
+      KC_PROXY_HEADERS: xforwarded  # trust X-Forwarded-* from nginx
+
+      # Observability (endpoints on the management port 9000: /health, /metrics)
+      KC_HEALTH_ENABLED: "true"
+      KC_METRICS_ENABLED: "true"
+      KC_LOG_LEVEL: info
+
+      # First-boot temporary admin (from .env.prod). Replace with a permanent
+      # admin after first login, then delete the temporary one.
+      KC_BOOTSTRAP_ADMIN_USERNAME: ${KC_BOOTSTRAP_ADMIN_USERNAME}
+      KC_BOOTSTRAP_ADMIN_PASSWORD: ${KC_BOOTSTRAP_ADMIN_PASSWORD}
+
+    # No host port publish — Keycloak is NOT exposed to the host or LAN.
+    # nginx reaches it over the shared `eo-net` network as http://keycloak:8080.
+
+    depends_on:
+      postgres:
+        condition: service_healthy
+
+    networks:
+      # keycloak-internal: private link to its own Postgres (DB not on eo-net).
+      - keycloak-internal
+      # eo-net: shared with the nginx/app stack so nginx can proxy to it.
+      - eo-net
+
+volumes:
+  postgres_data:
+
+networks:
+  keycloak-internal:
+    driver: bridge
+  eo-net:
+    # Created by the app stack (docker-compose.yaml). Must exist before this
+    # stack starts:  docker network create eo-net  (or start the app stack first).
+    external: true
+    name: eo-net

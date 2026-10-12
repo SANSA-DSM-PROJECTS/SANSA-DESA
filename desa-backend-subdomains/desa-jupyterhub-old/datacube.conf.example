@@ -1,0 +1,26 @@
+# Open Data Cube configuration — TEMPLATE
+#
+# Copy to `datacube.conf` and fill in real values. The real file is
+# gitignored because it contains database credentials.
+#
+#   cp datacube.conf.example datacube.conf
+#
+# Values should match PGDB_* in the repository-root .env
+
+[datacube]
+db_hostname: <db-host>
+db_database: <db-name>
+db_username: <db-user>
+db_password: <db-password>
+index_driver: default
+
+[experimental]
+db_hostname: <db-host>
+db_database: <db-name>
+db_username: <db-user>
+db_password: <db-password>
+index_driver: postgis
+
+# Do not re-add upstream ODC's [no_such_driver_env], [null_driver] or
+# [local_memory] test sections. Open Data Cube 1.9 rejects environment names
+# containing underscores, and their presence breaks every datacube command.

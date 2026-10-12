@@ -1,0 +1,53 @@
+---
+name: dst_water_indeces
+description: >-
+  DESA Water Quality Indices derived from Sentinel-2 imagery.
+  Monthly national mosaics of seven water quality indicators
+  for South African surface water bodies.
+metadata_type: eo3
+
+metadata:
+  product:
+    name: dst_water_indeces
+
+storage:
+  crs: EPSG:32735
+  resolution:
+    x: 20
+    y: -20
+
+measurements:
+  - name: awei
+    dtype: float32
+    nodata: -9999.0
+    units: "dimensionless"
+
+  - name: ndci
+    dtype: float32
+    nodata: -9999.0
+    units: "dimensionless"
+
+  - name: ndti
+    dtype: float32
+    nodata: -9999.0
+    units: "dimensionless"
+
+  - name: tss
+    dtype: float32
+    nodata: -9999.0
+    units: "g/m3"
+
+  - name: fai
+    dtype: float32
+    nodata: -9999.0
+    units: "dimensionless"
+
+  - name: abi
+    dtype: float32
+    nodata: -9999.0
+    units: "dimensionless"
+
+  - name: tds
+    dtype: float32
+    nodata: .nan
+    units: "mg/L"

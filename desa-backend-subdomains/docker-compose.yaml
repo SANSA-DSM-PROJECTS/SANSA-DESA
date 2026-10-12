@@ -18,13 +18,11 @@ services:
       - desa-terriamap
     networks:
       - desa-network
-
   # OpenDataCube Explorer
   desa-explorer:
     build:
       context: ./desa-explorer
     image: desa-explorer-custom
-    container_name: explorer
     environment:
       DB_HOSTNAME: "${PGDB_HOSTNAME}"
       DB_USERNAME: "${PGDB_USERNAME}"
@@ -35,45 +33,126 @@ services:
       FLASK_APP: cubedash
       FLASK_DEBUG: 0
       CUBEDASH_DEFAULT_TIMEZONE: Africa/Johannesburg
-    expose:
-      - "8000"
-    restart: unless-stopped
-    networks:
-      - desa-network
-    depends_on:
-      - desa-postgres
-
-  # JupyterHub service
-  desa-jupyterhub:
-    build: ./desa-jupyterhub
-    image: jupyter
-    container_name: jupyterhub
-    environment:
-      AWS_NO_SIGN_REQUEST: true
-      AWS_DEFAULT_REGION: af-south-1
-      DATACUBE_DB_URL: postgresql://${PGDB_USERNAME}:${PGDB_PASSWORD}@${PGDB_HOSTNAME}/${PGDB_DATABASE}
+      # Used by reindex_dst_water_indeces.sh to read dataset docs from the
+      # MinIO lake bucket (not the GDAL/rasterio S3 path -- just boto3).
+      AWS_S3_ENDPOINT: "${AWS_S3_ENDPOINT}"
+      MINIO_ACCESS_KEY: "${MINIO_ACCESS_KEY}"
+      MINIO_SECRET_KEY: "${MINIO_SECRET_KEY}"
     volumes:
-      - ./desa-jupyterhub/jupyterhub_config.py:/srv/jupyterhub/jupyterhub_config.py
-      - jupyterhub_data:/srv/jupyterhub/data
-      # Mounted rather than relying solely on the Dockerfile's `COPY datacube.conf
-      # /etc/`, so ODC config changes take effect on container recreate instead of
-      # requiring a full image rebuild. The file must exist before `up` -- it is
-      # gitignored (it holds DB credentials); copy datacube.conf.example to
-      # datacube.conf on a fresh checkout, or Docker will create a directory here.
-      - ./desa-jupyterhub/datacube.conf:/etc/datacube.conf:ro
-      # TLS is terminated by nginx (desadev-hub.sansa.org.za), and
-      # jupyterhub_config.py does not reference a cert or key. The previous
-      # jupyterhub.key/.crt bind-mounts pointed at files that did not exist,
-      # so Docker silently created empty *directories* in their place.
-    networks:
-      - desa-network
+      - ./product-generation:/opt/product-generation:ro
     expose:
       - "8000"
     restart: unless-stopped
+    networks:
+      - desa-network
+    labels:
+      # Ofelia job: monthly reindex of dst_water_indeces from MinIO.
+      # Runs on the 1st of each month at 03:00 UTC. Idempotent -- see
+      # product-generation/reindex_dst_water_indeces.sh.
+      ofelia.enabled: "true"
+      ofelia.job-exec.reindex-dst-water.schedule: "0 0 3 1 * *"
+      ofelia.job-exec.reindex-dst-water.command: "sh /opt/product-generation/reindex_dst_water_indeces.sh"
+      # Ofelia job: refresh Explorer summaries for Landsat 8/9 and
+      # Sentinel-2 after desa-indexer's 5-day reindex job has run.
+      # Scheduled 3h later (05:00) -- see desa-indexer's labels for the
+      # reindex schedule, and desa-ows's labels for the OWS refresh that
+      # follows this one at 05:30.
+      ofelia.job-exec.refresh-explorer-landsat-sentinel.schedule: "0 0 5 1,6,11,16,21,26 * *"
+      ofelia.job-exec.refresh-explorer-landsat-sentinel.command: "cubedash-gen ls8_sr ls8_st ls9_sr ls9_st s2_l2a"
+
+  # JupyterHub -- EO notebook environment.
+  #
+  # A thin `hub` image (JupyterHub + DockerSpawner + NativeAuthenticator)
+  # spawns one `singleuser` container (conda/mamba EO + Open Data Cube stack)
+  # per user on desa-network. Replaces the old monolithic single-container
+  # desa-jupyterhub image.
+  #
+  # Notebooks reach the Open Data Cube index as odc_reader on the SAME
+  # desa-db/datacube used by desa-ows/desa-explorer/desa-indexer -- there is
+  # no separate ODC database for JupyterHub, so a fresh index is never empty.
+  desa-jupyterhub-db:
+    image: postgres:16
+    container_name: desa-jupyterhub-db
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: jupyterhub
+      POSTGRES_USER: jupyterhub
+      POSTGRES_PASSWORD: "${JUPYTERHUB_DB_PASSWORD}"
+    volumes:
+      - jupyterhub-db-data:/var/lib/postgresql/data
+    networks:
+      - desa-network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U jupyterhub"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  desa-jupyterhub:
+    build:
+      context: ./desa-jupyterhub/hub
+    image: desa/jupyterhub:latest
+    container_name: desa-jupyterhub
+    restart: unless-stopped
     depends_on:
-      - desa-postgres
+      desa-jupyterhub-db:
+        condition: service_healthy
+    environment:
+      # Hub's own state (users, tokens, cookie secret).
+      POSTGRES_HOST: desa-jupyterhub-db
+      POSTGRES_DB: jupyterhub
+      POSTGRES_USER: jupyterhub
+      POSTGRES_PASSWORD: "${JUPYTERHUB_DB_PASSWORD}"
+      # DockerSpawner -- one container + one named volume per user, on the
+      # same desa-network so spawned containers can call back to the hub
+      # and reach desa-db.
+      DOCKER_NETWORK_NAME: desa-network
+      DOCKER_NOTEBOOK_IMAGE: desa/singleuser:latest
+      DOCKER_NOTEBOOK_DIR: /home/jovyan/work
+      JUPYTERHUB_ADMIN_USERS: "${JUPYTERHUB_ADMIN_USERS:-admin}"
+      # Keycloak SSO -- client registered in the "desa" realm (see
+      # keycloak-auth/keycloak/realm-import/desa-realm.json).
+      OAUTH_CLIENT_ID: "${OAUTH_CLIENT_ID}"
+      OAUTH_CLIENT_SECRET: "${OAUTH_CLIENT_SECRET}"
+      OAUTH_ISSUER_URL: "${OAUTH_ISSUER_URL}"
+      OAUTH_INTERNAL_ISSUER_URL: "${OAUTH_INTERNAL_ISSUER_URL}"
+      # Open Data Cube -- read-only role, injected into each spawned user
+      # container so `datacube` connects with no per-user config file.
+      DATACUBE_DB_HOST: "${PGDB_HOSTNAME}"
+      DATACUBE_DB_NAME: "${PGDB_DATABASE}"
+      DATACUBE_DB_USER: "${ODC_READER_USER:-odc_reader}"
+      DATACUBE_DB_PASSWORD: "${ODC_READER_PASSWORD}"
+    volumes:
+      # Hub-local state only (cookie secret) -- does NOT shadow the config
+      # baked into the image at /srv/jupyterhub.
+      - jupyterhub-data:/data
+      - /var/run/docker.sock:/var/run/docker.sock
+    networks:
+      desa-network:
+        # jupyterhub_config.py hardcodes hub_connect_ip = "hub" (from
+        # EO-Jupyterhub's original service name). Alias it here instead of
+        # renaming the service, so spawned user containers and in-hub
+        # services (idle-culler) can call back to the hub at that hostname.
+        aliases:
+          - hub
+    expose:
+      - "8000"
+
+  # Not started by `up` -- builds the per-user image DockerSpawner launches
+  # on demand. Rebuild with: docker compose build desa-jupyterhub-singleuser
+  desa-jupyterhub-singleuser:
+    build:
+      context: ./desa-jupyterhub/singleuser
+    image: desa/singleuser:latest
+    profiles: ["build-only"]
+    command: ["true"]
+
   desa-terriamap:
-    build: ./desa-terriamap
+    build:
+      context: ./desa-terriamap
+      args:
+        # desadev = local dev hostnames, desa = production. Set in .env.
+        DESA_PREFIX: "${DESA_PREFIX:-desa}"
     image: terriamap
     container_name: map
     networks:
@@ -81,35 +160,6 @@ services:
     expose:
       - "3001"
     restart: unless-stopped
-    volumes:
-      - ./nginx/ssl/sansa-bundle.txt:/app/sansa-bundle.pem:ro
-    environment:
-      NODE_EXTRA_CA_CERTS: /app/sansa-bundle.pem
-
-  # PostgreSQL database
-  desa-postgres:
-    container_name: desa-postgres
-    image: postgis/postgis:16-3.4
-    hostname: "${PGDB_HOSTNAME}"
-    environment:
-      POSTGRES_DB: "${PGDB_DATABASE}"
-      POSTGRES_PASSWORD: "${PGDB_PASSWORD}"
-      POSTGRES_USER: "${PGDB_USERNAME}"
-    # Expose port only internally, not on host
-    expose:
-      - "5432"
-    networks:
-      - desa-network
-    restart: always
-    healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U $${POSTGRES_USER} -d $${POSTGRES_DB}"]
-      timeout: 45s
-      interval: 10s
-      retries: 10
-    volumes:
-      - postgres_data:/var/lib/postgresql/data
-
-  # PGAdmin interface
 
   # OWS service
   desa-ows:
@@ -130,13 +180,22 @@ services:
       GDAL_CONFIG_FILE: /env/config/gdal-s3.conf
       PYTHONPATH: /env/config
       DATACUBE_OWS_CFG: ows_refactored.dev_af_ows_root_cfg.ows_cfg
+      # Products that reproject from a non-mercator native CRS (e.g.
+      # gm_ls8_ls9_annual, native EPSG:6933) issue many small HTTP range
+      # reads per S3 COG. Without these, each read pays full round-trip
+      # latency to af-south-1 with no connection reuse, which is what turns
+      # a GetMap request into a multi-minute one.
+      GDAL_HTTP_VERSION: "2"
+      GDAL_HTTP_MULTIPLEX: "YES"
+      GDAL_HTTP_TCP_KEEPALIVE: "YES"
+      VSI_CACHE: "TRUE"
+      VSI_CACHE_SIZE: "25000000"
+      CPL_VSIL_CURL_CACHE_SIZE: "200000000"
     expose:
       - "8000"
     restart: unless-stopped
     networks:
       - desa-network
-    depends_on:
-      - desa-postgres
     volumes:
       - ./desa-ows/products:/products
       # Rendered from .env by desa-ows/render-gdal-conf.sh -- gitignored, must
@@ -145,6 +204,79 @@ services:
       - ./desa-ows/services/ows_refactored:/env/config/ows_refactored/
       - ./desa-ows/services/inventory:/env/config/inventory/
       - ./desa-ows/output:/env/config/output/
+      - ./product-generation:/opt/product-generation:ro
+    labels:
+      # Ofelia job: refresh OWS views/ranges after desa-explorer's monthly
+      # reindex job (above) has run. Scheduled 15 min later so the new
+      # datasets exist first. See product-generation/refresh_ows_dst_water_indeces.sh.
+      ofelia.enabled: "true"
+      ofelia.job-exec.refresh-ows-dst-water.schedule: "0 15 3 1 * *"
+      ofelia.job-exec.refresh-ows-dst-water.command: "sh /opt/product-generation/refresh_ows_dst_water_indeces.sh"
+      # Ofelia jobs: refresh OWS views/ranges for Landsat 8/9 and Sentinel-2
+      # after desa-indexer's 5-day reindex job (below) has run. Scheduled
+      # 3.5h later (05:30) to give the reindex + Explorer refresh jobs a
+      # generous buffer -- the initial full-archive Landsat backfill took
+      # ~3.5h, though incremental reruns should be much faster since
+      # s3-to-dc skips already-indexed datasets.
+      ofelia.job-exec.refresh-ows-landsat-sentinel.schedule: "0 30 5 1,6,11,16,21,26 * *"
+      ofelia.job-exec.refresh-ows-landsat-sentinel.command: >-
+        sh -c "datacube-ows-update --views &&
+        datacube-ows-update ls8_sr ls8_st ls9_sr ls9_st s2_l2a"
+
+  # Scheduler for periodic jobs defined via labels on other services
+  # (ofelia.job-exec.* above). Runs the commands via `docker exec` inside
+  # the already-running target container -- no separate cron container or
+  # image needed per job.
+  ofelia:
+    image: mcuadros/ofelia:latest
+    container_name: desa-ofelia
+    command: daemon --docker
+    restart: unless-stopped
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+    networks:
+      - desa-network
+
+  # Dedicated container for odc-apps-dc-tools (s3-to-dc / stac-to-dc).
+  # These tools pull in a different datacube/click version than
+  # desa-explorer's pinned deps -- installing them into desa-explorer
+  # directly previously broke cubedash-gen (version conflict). This
+  # container exists purely so Ofelia has somewhere safe to `docker exec`
+  # indexing scripts into on a schedule; it does nothing on its own.
+  desa-indexer:
+    build:
+      context: ./desa-indexer
+    image: desa-indexer-custom
+    environment:
+      DB_HOSTNAME: "${PGDB_HOSTNAME}"
+      DB_USERNAME: "${PGDB_USERNAME}"
+      DB_PASSWORD: "${PGDB_PASSWORD}"
+      DB_DATABASE: "${PGDB_DATABASE}"
+      DB_PORT: "5432"
+      # DE Africa's S3 buckets don't expose a default region via instance
+      # metadata -- s3-to-dc/stac-to-dc fail with "Region name is not
+      # supplied" without this.
+      AWS_DEFAULT_REGION: af-south-1
+    volumes:
+      - ./product-generation:/opt/product-generation:ro
+    restart: unless-stopped
+    networks:
+      - desa-network
+    labels:
+      # Ofelia jobs: reindex Landsat 8/9 and Sentinel-2 from DE Africa
+      # every 5 days. Idempotent (s3-to-dc/stac-to-dc skip already-indexed
+      # dataset ids) -- safe to rerun even if nothing new has landed.
+      # Day-of-month list approximates "every 5 days" with a fixed,
+      # predictable time-of-day (unlike Ofelia's relative `@every` syntax),
+      # consistent with the absolute-cron style used by the water-product
+      # job above.
+      ofelia.enabled: "true"
+      ofelia.job-exec.reindex-landsat.schedule: "0 0 2 1,6,11,16,21,26 * *"
+      ofelia.job-exec.reindex-landsat.command: "python3 /opt/product-generation/index_landsat_8_9.py"
+      ofelia.job-exec.reindex-sentinel2.schedule: "0 30 2 1,6,11,16,21,26 * *"
+      ofelia.job-exec.reindex-sentinel2.command: "python3 /opt/product-generation/index_s2_l2a.py"
+      ofelia.job-exec.reindex-geomedian.schedule: "0 0 3 1,6,11,16,21,26 * *"
+      ofelia.job-exec.reindex-geomedian.command: "python3 /opt/product-generation/index_gm_ls8_ls9_annual.py"
 
   desa-contact:
     build:
@@ -163,10 +295,10 @@ services:
 
 networks:
   desa-network:
-    driver: bridge
+    external: true
 
 volumes:
-  jupyterhub_data:
+  jupyterhub-data:      # hub state: cookie secret
+  jupyterhub-db-data:   # hub state: Postgres (users, tokens)
   postgres_data:
   pgadmin_data:
-

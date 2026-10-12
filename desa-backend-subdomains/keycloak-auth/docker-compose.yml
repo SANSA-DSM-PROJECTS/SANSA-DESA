@@ -1,0 +1,82 @@
+services:
+  postgres:
+    image: postgres:15
+    container_name: keycloak_postgres
+    restart: unless-stopped
+    ports: 
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+    environment:
+      POSTGRES_DB: keycloak
+      POSTGRES_USER: keycloak
+      POSTGRES_PASSWORD: keycloak
+
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U keycloak -d keycloak"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+
+    networks:
+      - desa-network
+
+  keycloak:
+    build:
+      context: ./keycloak
+
+    container_name: keycloak
+    restart: unless-stopped
+
+    command:
+      - start-dev
+      - --import-realm
+      # Keycloak 26 option format: --spi-<spi>--<option>
+      - --spi-theme--cache-themes=false
+      - --spi-theme--cache-templates=false
+      - --spi-theme--static-max-age=-1
+
+    environment:
+      KC_DB: postgres
+      KC_DB_URL: jdbc:postgresql://keycloak_postgres:5432/keycloak
+      KC_DB_USERNAME: keycloak
+      KC_DB_PASSWORD: keycloak
+      KC_HOSTNAME: https://dlula-dev.sansa.org.za
+      KC_HOSTNAME_STRICT: "true"
+      KC_HTTP_ENABLED: "true"
+      # Keycloak 26 ignores X-Forwarded-* headers unless this is set. nginx
+      # terminates TLS and forwards to Keycloak over HTTP, so without this the
+      # account console gets scheme-mismatched responses ("Server responded
+      # with an invalid status").
+      KC_PROXY_HEADERS: xforwarded
+
+      # Keycloak 26: replaces KEYCLOAK_ADMIN / KEYCLOAK_ADMIN_PASSWORD.
+      # Only used the first time, when the master realm has no admin yet.
+      KC_BOOTSTRAP_ADMIN_USERNAME: admin
+      KC_BOOTSTRAP_ADMIN_PASSWORD: "sansa@2026"
+
+    # Live-mount the custom theme so edits to .ftl/.css/.properties show on a
+    # browser refresh (theme caching is disabled above).
+    volumes:
+      - ./keycloak/themes/dst-sansa:/opt/keycloak/themes/dst-sansa:ro
+      - ./keycloak/themes/sansa-admin:/opt/keycloak/themes/sansa-admin:ro
+      - ./keycloak/themes/desa:/opt/keycloak/themes/desa:ro
+
+    ports:
+      - "8088:8080"
+
+    depends_on:
+      postgres:
+        condition: service_healthy
+
+    networks:
+      - desa-network
+      
+volumes:
+  postgres_data:
+
+networks:
+  desa-network:
+    external: true
+    name: desa-network

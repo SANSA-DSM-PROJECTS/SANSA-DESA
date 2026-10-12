@@ -1,0 +1,59 @@
+---
+services:
+  jupyterhub:
+    build: .
+    image: jupyter
+    environment:
+      AWS_NO_SIGN_REQUEST: true
+      AWS_DEFAULT_REGION: af-south-1
+      DATACUBE_DB_URL: postgresql://${PGDB_USERNAME}:${PGDB_PASSWORD}@${PGDB_HOSTNAME}/${PGDB_DATABASE}
+
+    volumes:
+      - ./jupyterhub_config.py:/srv/jupyterhub/jupyterhub_config.py
+      - jupyterhub_data:/srv/jupyterhub/data
+      - ./jupyterhub.key:/srv/jupyterhub/jupyterhub.key:ro
+      - ./jupyterhub.crt:/srv/jupyterhub/jupyterhub.crt:ro
+      - ./notebooks:/home/eo-sansa
+    ports:
+      - "8001:8000"
+    restart: unless-stopped
+  desa-postgres:
+    container_name: desa-postgres
+    image: postgis/postgis:16-3.4
+    hostname: "${PGDB_HOSTNAME}"
+    environment:
+      POSTGRES_DB: "${PGDB_DATABASE}"
+      POSTGRES_PASSWORD: "${PGDB_PASSWORD}"
+      POSTGRES_USER: "${PGDB_USERNAME}"
+    ports:
+      - "5432:5432"
+    restart: always
+    healthcheck:
+      test:
+        [
+          "CMD",
+          "pg_isready",
+          "-h",
+          "postgres",
+          "-q",
+          "-d",
+          "opendatacube",
+          "-U",
+          "opendatacube",
+        ]
+      timeout: 45s
+      interval: 10s
+      retries: 10
+
+  desa-pgadmin:
+    container_name: desa-pgadmin
+    image: dpage/pgadmin4
+    restart: always
+    environment:
+      PGADMIN_DEFAULT_EMAIL: "${PGADMIN_EMAIL}"
+      PGADMIN_DEFAULT_PASSWORD: "${PGADMIN_PASSWORD}"
+    ports:
+      - "5050:80"
+
+volumes:
+  jupyterhub_data:

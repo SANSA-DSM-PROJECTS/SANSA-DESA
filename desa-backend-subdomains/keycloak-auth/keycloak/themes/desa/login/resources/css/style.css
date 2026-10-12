@@ -1,0 +1,597 @@
+/* SANSA brand font — Montserrat (primary copy/headline typeface, brand manual
+   p.14). Self-hosted in resources/fonts/ so it renders with no internet access
+   (works on air-gapped / offline production servers). */
+@font-face {
+    font-family: "Montserrat";
+    font-style: normal;
+    font-weight: 400;
+    font-display: swap;
+    src: url("../fonts/montserrat-latin-400-normal.woff2") format("woff2");
+}
+@font-face {
+    font-family: "Montserrat";
+    font-style: normal;
+    font-weight: 500;
+    font-display: swap;
+    src: url("../fonts/montserrat-latin-500-normal.woff2") format("woff2");
+}
+@font-face {
+    font-family: "Montserrat";
+    font-style: normal;
+    font-weight: 600;
+    font-display: swap;
+    src: url("../fonts/montserrat-latin-600-normal.woff2") format("woff2");
+}
+@font-face {
+    font-family: "Montserrat";
+    font-style: normal;
+    font-weight: 700;
+    font-display: swap;
+    src: url("../fonts/montserrat-latin-700-normal.woff2") format("woff2");
+}
+@font-face {
+    font-family: "Montserrat";
+    font-style: normal;
+    font-weight: 800;
+    font-display: swap;
+    src: url("../fonts/montserrat-latin-800-normal.woff2") format("woff2");
+}
+
+:root {
+    /* --- SANSA official logo colours (brand manual p.9) --- */
+    --sansa-bright-blue: #1283C6;   /* Pantone 534 C — accent */
+    --sansa-corporate-blue: #075192;/* Pantone 653 C — hover / mid */
+    --sansa-dark-blue: #1A315C;     /* Pantone 279 C — primary */
+
+    /* Roles mapped to brand colours */
+    --primary-color: var(--sansa-dark-blue);
+    --primary-hover: var(--sansa-corporate-blue);
+    --accent-color: var(--sansa-bright-blue);
+
+    /* Universal / functional colours kept as-is (not brand-defined) */
+    --success-color: #007749;
+    --danger-color: #a10000;
+    --light-background: #f8f9fa;
+    --border-color: #d7dce1;
+
+    --brand-font: "Montserrat", system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+}
+
+/* =========================================
+   PAGE
+========================================= */
+
+html,
+body {
+    min-height: 100%;
+}
+
+body {
+    margin: 0;
+    background-color: var(--primary-color) !important;
+    color: var(--primary-color);
+    font-family: var(--brand-font);
+}
+
+/* Full-height sticky footer.
+   Each custom login page (login/register/reset) emits its own full
+   <html><body> inside template.ftl's body. The browser keeps only the
+   outer <body> (whose class is empty), so the page's intended
+   `d-flex flex-column min-vh-100` body classes are dropped and the
+   footer no longer reaches the bottom -- leaving a blank band below it.
+   Re-establish the flex column on the REAL body and propagate full
+   height down Keycloak's wrapper chain so the card area grows and the
+   footer pins to the viewport bottom. */
+html {
+    height: 100%;
+}
+
+body {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+body > .login-pf-page,
+.login-pf-page > .card-pf,
+.card-pf > #kc-content,
+#kc-content > #kc-content-wrapper {
+    flex: 1 0 auto;
+    display: flex;
+    flex-direction: column;
+    min-height: 0;
+    width: 100%;
+}
+
+/* The card area centres its card vertically. `safe center` keeps a tall form
+   (e.g. registration) reachable from the top instead of clipping it when it
+   is taller than the viewport; the vertical padding gives breathing room. */
+.container.flex-grow-1.d-flex {
+    align-items: safe center !important;
+    padding-top: 1.25rem;
+    padding-bottom: 1.25rem;
+}
+
+.cont {
+    margin-top: 180px;
+}
+
+/* =========================================
+   CARD
+========================================= */
+
+.card {
+    background-color: #ffffff;
+    border: none;
+    border-radius: 10px;
+    overflow: hidden;
+}
+
+.shadows {
+    background-color: #ffffff;
+    color: var(--primary-color);
+    border: 2px solid var(--primary-color);
+    border-radius: 10px;
+    box-shadow: 0 12px 32px rgba(0, 0, 0, 0.35);
+}
+
+.shadows label,
+.shadows .form-label {
+    font-weight: 600;
+    font-size: 0.9rem;
+}
+
+.container p {
+	color: white !important;
+}
+
+/* =========================================
+   FORM CONTROLS
+========================================= */
+
+.form-control {
+    border: 1px solid #ced4da;
+    border-radius: 6px;
+    padding: 10px 12px;
+}
+
+.form-control:focus {
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 0.2rem rgba(26, 49, 92, 0.2);
+}
+
+/* =========================================
+   PRIMARY BUTTON
+========================================= */
+
+.btn-primary {
+    background-color: var(--primary-color);
+    border-color: var(--primary-color);
+    color: #ffffff;
+    font-weight: 600;
+    padding: 0.7rem 1rem;
+}
+
+.btn-primary:hover,
+.btn-primary:focus,
+.btn-primary:active {
+    background-color: var(--primary-hover) !important;
+    border-color: var(--primary-hover) !important;
+    color: #ffffff !important;
+}
+
+.btn-primary:focus {
+    box-shadow: 0 0 0 0.2rem rgba(26, 49, 92, 0.25);
+}
+
+/* =========================================
+   ERROR MESSAGE
+========================================= */
+
+.error-message {
+    background-color: #ffe6e6;
+    color: var(--danger-color);
+    padding: 10px;
+    border: 1px solid rgba(161, 0, 0, 0.2);
+    border-radius: 6px;
+    margin-bottom: 1rem;
+    font-size: 13px;
+}
+
+.alert {
+    font-size: 0.875rem;
+    text-align: left;
+    border-radius: 6px;
+}
+
+.alert-danger {
+    background-color: #ffe6e6;
+    color: var(--danger-color);
+    border-color: rgba(161, 0, 0, 0.2);
+}
+
+.alert-success {
+    background-color: #e6f4ee;
+    color: var(--success-color);
+    border-color: rgba(0, 119, 73, 0.25);
+}
+
+.alert-info {
+    background-color: #e8eef5;
+    color: var(--primary-color);
+    border-color: rgba(26, 49, 92, 0.2);
+}
+
+.alert-warning {
+    background-color: #fff6e0;
+    color: #7a5200;
+    border-color: rgba(122, 82, 0, 0.25);
+}
+
+/* =========================================
+   ACCOUNT ACTION LINKS
+========================================= */
+
+.realmaction a,
+.backto a {
+    color: var(--primary-color);
+    font-weight: 500;
+    text-decoration: none;
+}
+
+.realmaction a:hover,
+.backto a:hover {
+    color: var(--accent-color);
+    text-decoration: underline;
+}
+
+/* =========================================
+   KEYCLOAK DEFAULT ELEMENTS
+========================================= */
+
+#kc-header,
+#kc-page-title,
+.kc-required {
+    display: none !important;
+}
+
+/* =========================================
+   SOCIAL LOGIN BUTTONS
+========================================= */
+
+.social-btn,
+.btn-google {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    background-color: #ffffff;
+    color: #444444;
+    border: 1px solid #dddddd;
+    border-radius: 50px;
+    padding: 12px 20px;
+    font-weight: 500;
+    font-size: 14px;
+    text-decoration: none;
+    transition:
+        background-color 0.2s ease-in-out,
+        border-color 0.2s ease-in-out,
+        box-shadow 0.2s ease-in-out,
+        color 0.2s ease-in-out;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+}
+
+.social-btn i,
+.btn-google i {
+    font-size: 16px;
+}
+
+.social-btn:hover,
+.btn-google:hover {
+    background-color: #f8f9fa;
+    color: #222222;
+    text-decoration: none;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+}
+
+.social-btn.google {
+    background-color: #ffffff;
+    border-color: #dddddd;
+    color: #333333;
+}
+
+.social-btn.google:hover {
+    background-color: #f8f9fa;
+    color: #222222;
+}
+
+.social-btn.facebook {
+    background-color: #1877f2;
+    border-color: #1877f2;
+    color: #ffffff;
+}
+
+.social-btn.facebook:hover {
+    background-color: #166fe5;
+    border-color: #166fe5;
+    color: #ffffff;
+}
+
+/* =========================================
+   VERIFICATION AND STATUS ICONS
+========================================= */
+
+.verification-icon,
+.status-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 76px;
+    height: 76px;
+    margin-right: auto;
+    margin-left: auto;
+    border-radius: 50%;
+    font-size: 2.4rem;
+}
+
+.verification-icon {
+    color: var(--primary-color);
+    background-color: rgba(26, 49, 92, 0.12);
+}
+
+.status-icon.success {
+    color: var(--success-color);
+    background-color: rgba(0, 119, 73, 0.12);
+}
+
+.status-icon.error {
+    color: #dc3545;
+    background-color: rgba(220, 53, 69, 0.12);
+}
+
+/* =========================================
+   LOGOUT BUTTON
+========================================= */
+
+.nav-link[onclick*="logout"] {
+    cursor: pointer;
+    background-color: #dc3545;
+    color: #ffffff !important;
+    padding: 8px 16px !important;
+    border-radius: 4px;
+    margin-left: 15px !important;
+    text-decoration: none;
+    transition: background-color 0.3s ease;
+}
+
+.nav-link[onclick*="logout"]:hover {
+    background-color: #c82333;
+    color: #ffffff !important;
+    text-decoration: none;
+}
+
+/* =========================================
+   GENERAL
+========================================= */
+
+code {
+    word-break: break-all;
+}
+
+a {
+    transition: color 0.2s ease-in-out;
+}
+
+/* =========================================
+   Back to application link
+========================================= */
+
+a[href*="referrer_uri"] {
+    text-decoration: none !important;
+    color: #0a2642 !important;
+    background: #ffffff;
+    border-radius: 10px;
+    font-weight: 700;
+    padding: 8px 16px;
+    display: inline-flex;
+    align-items: center;
+    transition: all 0.2s ease;
+}
+
+a[href*="referrer_uri"]:hover {
+    background: #f3f6f9;
+    color: #0a2642 !important;
+    text-decoration: none !important;
+}
+
+/* =========================================
+   UPDATE PROFILE PAGE
+========================================= */
+
+#kc-update-profile-form .form-label {
+    color: var(--primary-color);
+    font-size: 14px;
+    font-weight: 600;
+    margin-bottom: 7px;
+}
+
+#kc-update-profile-form .input-group-text {
+    min-width: 46px;
+    justify-content: center;
+    background-color: #f3f6f9;
+    color: var(--primary-color);
+    border-color: #ced4da;
+    font-size: 16px;
+}
+
+#kc-update-profile-form .form-control,
+#kc-update-profile-form .form-select {
+    min-height: 46px;
+    color: #212529;
+    background-color: #ffffff;
+    border: 1px solid #ced4da;
+    border-radius: 6px;
+}
+
+#kc-update-profile-form .input-group .form-control {
+    border-top-left-radius: 0;
+    border-bottom-left-radius: 0;
+}
+
+#kc-update-profile-form .form-select:focus,
+#kc-update-profile-form .form-control:focus {
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 0.2rem rgba(26, 49, 92, 0.2);
+}
+
+#kc-update-profile-form textarea.form-control {
+    min-height: 110px;
+    resize: vertical;
+}
+
+#kc-update-profile-form input[readonly],
+#kc-update-profile-form textarea[readonly],
+#kc-update-profile-form select:disabled {
+    background-color: #e9ecef;
+    color: #6c757d;
+    cursor: not-allowed;
+}
+
+.profile-description {
+    color: #6c757d !important;
+    font-weight: 400;
+    line-height: 1.5;
+}
+
+.profile-security-note,
+.profile-security-note small {
+    color: #6c757d !important;
+    font-weight: 400;
+    line-height: 1.5;
+}
+
+.page-copyright {
+    color: #ffffff !important;
+    font-weight: 400;
+}
+
+#kc-update-profile-form .form-text {
+    color: #6c757d;
+    font-size: 12px;
+    font-weight: 400;
+}
+
+#kc-update-profile-form .text-danger {
+    font-weight: 400;
+}
+
+#kc-update-profile-form .btn-outline-secondary {
+    min-height: 46px;
+    font-weight: 600;
+}
+
+#kc-update-profile-form .btn-outline-secondary:hover {
+    color: #ffffff;
+}
+
+/* Correct text colour inside the white card */
+.card p {
+    color: #6c757d !important;
+}
+
+.card .alert p,
+.card .alert {
+    color: inherit !important;
+}
+
+/* Keep footer text white */
+.container .page-copyright {
+    color: #ffffff !important;
+}
+
+/* =========================================
+   SITE FOOTER
+========================================= */
+
+.site-footer {
+    width: 100%;
+    background-color: #ffffff;
+    box-shadow: 0 -4px 24px rgba(0, 0, 0, 0.18);
+    padding: 1.1rem 0;
+    flex-shrink: 0;
+}
+
+.site-footer-inner {
+    width: 100%;
+    margin: 0;
+    padding: 0 3rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 2rem;
+}
+
+.site-footer-logo {
+    height:40px;
+    width: auto;
+    flex-shrink: 0;
+    opacity: 1;
+    transition: transform 0.2s ease-in-out;
+}
+
+/* The STI badge has a lot of built-in whitespace around the crest/wordmark,
+   so at the same height as the (tightly-cropped) SANSA logo it reads
+   noticeably smaller -- bump it up to match visually. */
+.site-footer-logo--sti {
+    height: 60px;
+}
+
+.site-footer-logo:hover {
+    transform: translateY(-1px);
+}
+
+.site-footer-copyright {
+    flex: 1 1 auto;
+    margin: 0;
+    text-align: center;
+    color: #5a6472 !important;
+    font-size: 0.8rem;
+    font-weight: 400;
+    letter-spacing: 0.02em;
+}
+
+/* =========================================
+   RESPONSIVE
+========================================= */
+
+@media (max-width: 767.98px) {
+    .container.flex-grow-1 {
+        padding-top: 30px;
+        padding-bottom: 30px;
+    }
+
+    .cont {
+        margin-top: 30px;
+    }
+
+    .card-body {
+        padding: 1.5rem !important;
+    }
+
+    .site-footer-inner {
+        flex-direction: column;
+        gap: 1rem;
+        padding: 0 1.5rem;
+        text-align: center;
+    }
+
+    .site-footer-copyright {
+        order: 3;
+    }
+
+    .realmaction {
+        flex-direction: column;
+        align-items: center;
+        gap: 8px;
+    }
+}

@@ -1,0 +1,163 @@
+/* =====================================================================
+   SANSA admin console theme
+   Branding overlay on top of PatternFly v5 (Keycloak admin UI).
+   Scope: colours (SANSA blues), logo sizing, and softer rounded corners.
+   Functional styles are inherited from the stock keycloak.v2 theme.
+   ===================================================================== */
+
+:root {
+    /* SANSA official logo colours (brand manual p.9) */
+    --sansa-bright-blue: #1283C6;   /* Pantone 534 C */
+    --sansa-corporate-blue: #075192;/* Pantone 653 C */
+    --sansa-dark-blue: #1A315C;     /* Pantone 279 C */
+
+    /* Near-black shell used for the masthead + left sidebar (matches design). */
+    --sansa-shell-bg: #0b0e14;
+    --sansa-shell-text: #e6e9ef;
+    --sansa-shell-muted: #8b93a7;
+
+    /* Map PatternFly's primary/active tokens to SANSA blue.
+       These variables drive buttons, links, active nav, focus, etc. */
+    --pf-v5-global--primary-color--100: var(--sansa-corporate-blue);
+    --pf-v5-global--primary-color--200: var(--sansa-dark-blue);
+    --pf-v5-global--link--Color: var(--sansa-bright-blue);
+    --pf-v5-global--link--Color--hover: var(--sansa-corporate-blue);
+    --pf-v5-global--active-color--100: var(--sansa-bright-blue);
+    --pf-v5-global--BorderRadius--sm: 8px;
+    --pf-v5-global--BorderRadius--lg: 14px;
+}
+
+/* ---------------------------------------------------------------------
+   MASTHEAD (dark header) — uniform SANSA dark blue across the whole bar,
+   white logo, and legible icons/text on top.
+   PatternFly drives the masthead colour through this variable; setting it
+   colours the entire bar (brand + toolbar), not just the logo box.
+   --------------------------------------------------------------------- */
+.pf-v5-c-masthead {
+    --pf-v5-c-masthead--BackgroundColor: var(--sansa-shell-bg);
+    background-color: var(--sansa-shell-bg) !important;
+    border-bottom: 3px solid var(--sansa-bright-blue);
+}
+
+.pf-v5-c-masthead__main,
+.pf-v5-c-masthead__content,
+.pf-v5-c-masthead__toolbar {
+    background-color: var(--sansa-shell-bg) !important;
+}
+
+/* Keep header controls (help, user menu, hamburger) readable on dark blue */
+.pf-v5-c-masthead .pf-v5-c-button,
+.pf-v5-c-masthead .pf-v5-c-dropdown__toggle,
+.pf-v5-c-masthead svg {
+    color: #ffffff !important;
+    fill: #ffffff !important;
+}
+
+.pf-v5-c-brand,
+.pf-v5-c-masthead__brand img,
+img.pf-v5-c-brand {
+    max-height: 40px !important;
+    width: auto !important;
+}
+
+/* ---------------------------------------------------------------------
+   PRIMARY BUTTONS → SANSA blue, rounded
+   --------------------------------------------------------------------- */
+.pf-v5-c-button.pf-m-primary {
+    background-color: var(--sansa-corporate-blue);
+    border-radius: 8px;
+}
+
+.pf-v5-c-button.pf-m-primary:hover,
+.pf-v5-c-button.pf-m-primary:focus {
+    background-color: var(--sansa-dark-blue);
+}
+
+.pf-v5-c-button {
+    border-radius: 8px;
+}
+
+/* ---------------------------------------------------------------------
+   ROUNDED / SMOOTH CURVES on cards, panels, inputs, menus
+   --------------------------------------------------------------------- */
+.pf-v5-c-card,
+.pf-v5-c-panel,
+.pf-v5-c-modal-box,
+.pf-v5-c-dropdown__menu,
+.pf-v5-c-menu {
+    border-radius: 14px !important;
+    overflow: hidden;
+}
+
+.pf-v5-c-card {
+    box-shadow: 0 4px 16px rgba(26, 49, 92, 0.10);
+}
+
+.pf-v5-c-form-control,
+.pf-v5-c-form-control > input,
+.pf-v5-c-text-input-group,
+.pf-v5-c-text-input-group__text {
+    border-radius: 8px !important;
+}
+
+/* Tabs / active nav indicator in SANSA bright blue */
+.pf-v5-c-tabs__link:hover,
+.pf-v5-c-tabs__item.pf-m-current .pf-v5-c-tabs__link {
+    --pf-v5-c-tabs__link--after--BorderColor: var(--sansa-bright-blue);
+}
+
+.pf-v5-c-nav__link.pf-m-current,
+.pf-v5-c-nav__link:hover {
+    border-radius: 8px;
+}
+
+/* Left navigation selected item accent */
+.pf-v5-c-nav__item .pf-v5-c-nav__link.pf-m-current {
+    border-left: 3px solid var(--sansa-bright-blue);
+}
+
+/* ---------------------------------------------------------------------
+   LEFT SIDEBAR (dark shell) — near-black background with white text and
+   bright-blue accents, matching the masthead so the whole shell reads as
+   one dark frame around the white content area.
+   --------------------------------------------------------------------- */
+.pf-v5-c-page__sidebar {
+    --pf-v5-c-page__sidebar--BackgroundColor: var(--sansa-shell-bg);
+    background-color: var(--sansa-shell-bg) !important;
+}
+
+/* Realm selector at the top of the nav + generic nav links */
+.pf-v5-c-page__sidebar .pf-v5-c-nav__link,
+.pf-v5-c-page__sidebar .pf-v5-c-menu-toggle,
+.pf-v5-c-page__sidebar .pf-v5-c-menu-toggle__text {
+    color: var(--sansa-shell-text) !important;
+}
+
+/* Section headings ("Manage", "Configure") in a muted grey */
+.pf-v5-c-page__sidebar .pf-v5-c-nav__section-title,
+.pf-v5-c-page__sidebar .pf-v5-c-nav__subnav .pf-v5-c-nav__section-title {
+    color: var(--sansa-shell-muted) !important;
+}
+
+/* Icons inside the sidebar stay legible on dark */
+.pf-v5-c-page__sidebar svg {
+    fill: currentColor !important;
+}
+
+/* Hover + current item: subtle bright-blue wash, white text, blue edge */
+.pf-v5-c-page__sidebar .pf-v5-c-nav__link:hover,
+.pf-v5-c-page__sidebar .pf-v5-c-nav__link:focus,
+.pf-v5-c-page__sidebar .pf-v5-c-nav__link.pf-m-current {
+    background-color: rgba(18, 131, 198, 0.18) !important;
+    color: #ffffff !important;
+}
+
+.pf-v5-c-page__sidebar .pf-v5-c-nav__item .pf-v5-c-nav__link.pf-m-current {
+    border-left: 3px solid var(--sansa-bright-blue);
+}
+
+/* Blue divider under the realm-selector block (as in the design) */
+.pf-v5-c-page__sidebar .pf-v5-c-divider {
+    --pf-v5-c-divider--BackgroundColor: var(--sansa-bright-blue);
+    background-color: var(--sansa-bright-blue) !important;
+}

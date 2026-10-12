@@ -1,0 +1,437 @@
+{
+    "homeCamera": {
+        "north": -24,
+        "east": 33.5,
+        "south": -32.5,
+        "west": 16
+    },
+    "viewerMode": "2d",
+    "catalog": [
+        {
+            "name": "Water Indices",
+            "type": "group",
+            "description": "Monthly national mosaics of water quality indicators for South African surface water bodies, derived from Sentinel-2 imagery at 20 m resolution.",
+            "members": [
+                {
+                    "type": "wms",
+                    "name": "Chlorophyll (NDCI)",
+                    "url": "https://desa-ows.sansa.org.za/wms",
+                    "layers": "dst_water_indeces",
+                    "styles": "ndci",
+                    "opacity": 0.85,
+                    "info": [
+                        {
+                            "name": "About",
+                            "content": "Normalised Difference Chlorophyll Index. Correlates with chlorophyll-a concentration and algal bloom risk."
+                        }
+                    ]
+                },
+                {
+                    "type": "wms",
+                    "name": "Turbidity (NDTI)",
+                    "url": "https://desa-ows.sansa.org.za/wms",
+                    "layers": "dst_water_indeces",
+                    "styles": "ndti",
+                    "opacity": 0.85,
+                    "info": [
+                        {
+                            "name": "About",
+                            "content": "Normalised Difference Turbidity Index. Higher values indicate greater suspended sediment."
+                        }
+                    ]
+                },
+                {
+                    "type": "wms",
+                    "name": "Algal Bloom Index (ABI)",
+                    "url": "https://desa-ows.sansa.org.za/wms",
+                    "layers": "dst_water_indeces",
+                    "styles": "abi",
+                    "opacity": 0.85,
+                    "info": [
+                        {
+                            "name": "About",
+                            "content": "Algal Bloom Index. Indicates the severity of algal bloom conditions."
+                        }
+                    ]
+                },
+                {
+                    "type": "wms",
+                    "name": "Water extent (AWEI)",
+                    "url": "https://desa-ows.sansa.org.za/wms",
+                    "layers": "dst_water_indeces",
+                    "styles": "awei",
+                    "opacity": 0.85,
+                    "info": [
+                        {
+                            "name": "About",
+                            "content": "Automated Water Extraction Index. Positive values indicate the presence of open water."
+                        }
+                    ]
+                },
+                {
+                    "type": "wms",
+                    "name": "Total Suspended Solids (TSS)",
+                    "url": "https://desa-ows.sansa.org.za/wms",
+                    "layers": "dst_water_indeces",
+                    "styles": "tss",
+                    "opacity": 0.85,
+                    "info": [
+                        {
+                            "name": "About",
+                            "content": "Total Suspended Solids concentration in grams per cubic metre."
+                        }
+                    ]
+                },
+                {
+                    "type": "wms",
+                    "name": "Total Dissolved Solids (TDS)",
+                    "url": "https://desa-ows.sansa.org.za/wms",
+                    "layers": "dst_water_indeces",
+                    "styles": "tds",
+                    "opacity": 0.85,
+                    "info": [
+                        {
+                            "name": "About",
+                            "content": "Total Dissolved Solids concentration in milligrams per litre."
+                        }
+                    ]
+                },
+                {
+                    "type": "wms",
+                    "name": "Floating Algae (FAI)",
+                    "url": "https://desa-ows.sansa.org.za/wms",
+                    "layers": "dst_water_indeces",
+                    "styles": "fai",
+                    "opacity": 0.85,
+                    "info": [
+                        {
+                            "name": "About",
+                            "content": "Floating Algae Index. Detects floating algae and vegetation on the water surface."
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "name": "Satellite Imagery",
+            "type": "group",
+            "description": "Landsat Collection 2 Level-2 Analysis Ready Data (CARD4L-compliant), 30 m resolution.",
+            "members": [
+                {
+                    "name": "Surface Reflectance",
+                    "type": "group",
+                    "members": [
+                        {
+                            "type": "wms",
+                            "name": "Landsat 9 - True colour (RGB)",
+                            "url": "https://desa-ows.sansa.org.za/wms",
+                            "layers": "ls9_sr",
+                            "styles": "simple_rgb",
+                            "opacity": 1.0
+                        },
+                        {
+                            "type": "wms",
+                            "name": "Landsat 9 - False colour (SWIR/NIR/Green)",
+                            "url": "https://desa-ows.sansa.org.za/wms",
+                            "layers": "ls9_sr",
+                            "styles": "infrared_green",
+                            "opacity": 1.0
+                        },
+                        {
+                            "type": "wms",
+                            "name": "Landsat 9 - NDVI (vegetation)",
+                            "url": "https://desa-ows.sansa.org.za/wms",
+                            "layers": "ls9_sr",
+                            "styles": "ndvi",
+                            "opacity": 0.85
+                        },
+                        {
+                            "type": "wms",
+                            "name": "Landsat 9 - NDWI (water)",
+                            "url": "https://desa-ows.sansa.org.za/wms",
+                            "layers": "ls9_sr",
+                            "styles": "ndwi",
+                            "opacity": 0.85
+                        },
+                        {
+                            "type": "wms",
+                            "name": "Landsat 9 - MNDWI (modified water)",
+                            "url": "https://desa-ows.sansa.org.za/wms",
+                            "layers": "ls9_sr",
+                            "styles": "mndwi",
+                            "opacity": 0.85
+                        },
+                        {
+                            "type": "wms",
+                            "name": "Landsat 8 - True colour (RGB)",
+                            "url": "https://desa-ows.sansa.org.za/wms",
+                            "layers": "ls8_sr",
+                            "styles": "simple_rgb",
+                            "opacity": 1.0
+                        },
+                        {
+                            "type": "wms",
+                            "name": "Landsat 8 - False colour (SWIR/NIR/Green)",
+                            "url": "https://desa-ows.sansa.org.za/wms",
+                            "layers": "ls8_sr",
+                            "styles": "infrared_green",
+                            "opacity": 1.0
+                        },
+                        {
+                            "type": "wms",
+                            "name": "Landsat 8 - NDVI (vegetation)",
+                            "url": "https://desa-ows.sansa.org.za/wms",
+                            "layers": "ls8_sr",
+                            "styles": "ndvi",
+                            "opacity": 0.85
+                        },
+                        {
+                            "type": "wms",
+                            "name": "Landsat 8 - NDWI (water)",
+                            "url": "https://desa-ows.sansa.org.za/wms",
+                            "layers": "ls8_sr",
+                            "styles": "ndwi",
+                            "opacity": 0.85
+                        },
+                        {
+                            "type": "wms",
+                            "name": "Landsat 8 - MNDWI (modified water)",
+                            "url": "https://desa-ows.sansa.org.za/wms",
+                            "layers": "ls8_sr",
+                            "styles": "mndwi",
+                            "opacity": 0.85
+                        }
+                    ]
+                },
+                {
+                    "name": "Surface Temperature",
+                    "type": "group",
+                    "members": [
+                        {
+                            "type": "wms",
+                            "name": "Landsat 9 - Surface temperature (°C)",
+                            "url": "https://desa-ows.sansa.org.za/wms",
+                            "layers": "ls9_st",
+                            "styles": "surface_temperature",
+                            "opacity": 0.85
+                        },
+                        {
+                            "type": "wms",
+                            "name": "Landsat 9 - Surface temperature, cloud-masked (°C)",
+                            "url": "https://desa-ows.sansa.org.za/wms",
+                            "layers": "ls9_st",
+                            "styles": "surface_temperature_masked",
+                            "opacity": 0.85
+                        },
+                        {
+                            "type": "wms",
+                            "name": "Landsat 9 - Temperature uncertainty (°C)",
+                            "url": "https://desa-ows.sansa.org.za/wms",
+                            "layers": "ls9_st",
+                            "styles": "surface_temperature_uncertainty",
+                            "opacity": 0.85
+                        },
+                        {
+                            "type": "wms",
+                            "name": "Landsat 8 - Surface temperature (°C)",
+                            "url": "https://desa-ows.sansa.org.za/wms",
+                            "layers": "ls8_st",
+                            "styles": "surface_temperature",
+                            "opacity": 0.85
+                        },
+                        {
+                            "type": "wms",
+                            "name": "Landsat 8 - Surface temperature, cloud-masked (°C)",
+                            "url": "https://desa-ows.sansa.org.za/wms",
+                            "layers": "ls8_st",
+                            "styles": "surface_temperature_masked",
+                            "opacity": 0.85
+                        },
+                        {
+                            "type": "wms",
+                            "name": "Landsat 8 - Temperature uncertainty (°C)",
+                            "url": "https://desa-ows.sansa.org.za/wms",
+                            "layers": "ls8_st",
+                            "styles": "surface_temperature_uncertainty",
+                            "opacity": 0.85
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "name": "Administrative Boundaries",
+            "type": "group",
+            "description": "South African administrative boundaries served from DESA GeoServer.",
+            "members": [
+                {
+                    "type": "wms",
+                    "name": "Provinces",
+                    "url": "https://desa-geoserver.sansa.org.za/geoserver/Datacube-OWS/wms",
+                    "layers": "Provinces",
+                    "opacity": 0.6
+                },
+                {
+                    "type": "wms",
+                    "name": "District Municipalities",
+                    "url": "https://desa-geoserver.sansa.org.za/geoserver/Datacube-OWS/wms",
+                    "layers": "District",
+                    "opacity": 0.6
+                },
+                {
+                    "type": "wms",
+                    "name": "Local Municipalities",
+                    "url": "https://desa-geoserver.sansa.org.za/geoserver/Datacube-OWS/wms",
+                    "layers": "Local",
+                    "opacity": 0.6
+                },
+                {
+                    "type": "wms",
+                    "name": "Wards",
+                    "url": "https://desa-geoserver.sansa.org.za/geoserver/Datacube-OWS/wms",
+                    "layers": "Wards",
+                    "opacity": 0.6
+                }
+            ]
+        }
+    ],
+    "baseMaps": {
+        "defaultBaseMapId": "basemap-openstreetmap",
+        "previewBaseMapId": "basemap-openstreetmap",
+        "items": [
+            {
+                "item": {
+                    "id": "basemap-positron",
+                    "name": "Positron (Light)",
+                    "type": "open-street-map",
+                    "url": "https://basemaps.cartocdn.com/light_all/",
+                    "subdomains": [
+                        "a",
+                        "b",
+                        "c",
+                        "d"
+                    ],
+                    "attribution": "© <a href='https://www.openstreetmap.org/copyright'>OpenStreetMap contributors</a> ODbL, © <a href='https://carto.com/attributions'>CARTO</a> CC BY 3.0",
+                    "maximumLevel": 19,
+                    "opacity": 1.0
+                },
+                "image": "images/basemaps/positron.png",
+                "contrastColor": "#000000"
+            },
+            {
+                "item": {
+                    "id": "basemap-positron-nolabels",
+                    "name": "Positron (No Labels)",
+                    "type": "open-street-map",
+                    "url": "https://basemaps.cartocdn.com/light_nolabels/",
+                    "subdomains": [
+                        "a",
+                        "b",
+                        "c",
+                        "d"
+                    ],
+                    "attribution": "© <a href='https://www.openstreetmap.org/copyright'>OpenStreetMap contributors</a> ODbL, © <a href='https://carto.com/attributions'>CARTO</a> CC BY 3.0",
+                    "maximumLevel": 19,
+                    "opacity": 1.0
+                },
+                "image": "https://basemaps.cartocdn.com/light_nolabels/5/18/18.png",
+                "contrastColor": "#000000"
+            },
+            {
+                "item": {
+                    "id": "basemap-openstreetmap",
+                    "name": "OpenStreetMap",
+                    "type": "open-street-map",
+                    "url": "https://tile.openstreetmap.org/",
+                    "attribution": "© <a href='https://www.openstreetmap.org/copyright'>OpenStreetMap contributors</a>",
+                    "maximumLevel": 19,
+                    "opacity": 1.0
+                },
+                "image": "build/TerriaJS/images/openstreetmap.png",
+                "contrastColor": "#000000"
+            },
+            {
+                "item": {
+                    "id": "basemap-darkmatter",
+                    "name": "Dark Matter",
+                    "type": "open-street-map",
+                    "url": "https://basemaps.cartocdn.com/dark_all/",
+                    "subdomains": [
+                        "a",
+                        "b",
+                        "c",
+                        "d"
+                    ],
+                    "attribution": "© <a href='https://www.openstreetmap.org/copyright'>OpenStreetMap contributors</a> ODbL, © <a href='https://carto.com/attributions'>CARTO</a> CC BY 3.0",
+                    "maximumLevel": 19,
+                    "opacity": 1.0
+                },
+                "image": "images/basemaps/dark-matter.png",
+                "contrastColor": "#ffffff"
+            },
+            {
+                "item": {
+                    "id": "basemap-esri-world-imagery",
+                    "name": "Esri World Imagery",
+                    "type": "esri-mapServer",
+                    "url": "https://services.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer",
+                    "attribution": "Esri, Maxar, Earthstar Geographics, and the GIS User Community",
+                    "opacity": 1.0
+                },
+                "image": "https://services.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/5/18/18",
+                "contrastColor": "#ffffff"
+            },
+            {
+                "item": {
+                    "id": "basemap-s2cloudless",
+                    "name": "Sentinel-2 Cloudless (2021)",
+                    "type": "url-template-imagery",
+                    "url": "https://tiles.maps.eox.at/wmts/1.0.0/s2cloudless-2021_3857/default/g/{z}/{y}/{x}.jpg",
+                    "attribution": "<a href='https://s2maps.eu'>Sentinel-2 cloudless 2021</a> by <a href='https://eox.at'>EOX IT Services GmbH</a> (Contains modified Copernicus Sentinel data 2021)",
+                    "maximumLevel": 14,
+                    "opacity": 1.0
+                },
+                "image": "https://tiles.maps.eox.at/wmts/1.0.0/s2cloudless-2021_3857/default/g/5/18/18.jpg",
+                "contrastColor": "#ffffff"
+            },
+            {
+                "item": {
+                    "id": "basemap-esri-hillshade",
+                    "name": "Esri World Hillshade",
+                    "type": "esri-mapServer",
+                    "url": "https://services.arcgisonline.com/ArcGIS/rest/services/Elevation/World_Hillshade/MapServer",
+                    "attribution": "Esri, USGS, NGA, NASA, CGIAR, N Robinson, NCEAS, NLS, OS, NMA, Geodatastyrelsen and the GIS User Community",
+                    "opacity": 1.0
+                },
+                "image": "https://services.arcgisonline.com/ArcGIS/rest/services/Elevation/World_Hillshade/MapServer/tile/5/18/18",
+                "contrastColor": "#000000"
+            },
+            {
+                "item": {
+                    "id": "basemap-opentopomap",
+                    "name": "OpenTopoMap",
+                    "type": "open-street-map",
+                    "url": "https://tile.opentopomap.org/",
+                    "attribution": "Map data: © <a href='https://www.openstreetmap.org/copyright'>OpenStreetMap contributors</a>, SRTM | Map style: © <a href='https://opentopomap.org'>OpenTopoMap</a> (CC-BY-SA)",
+                    "maximumLevel": 17,
+                    "opacity": 1.0
+                },
+                "image": "https://tile.opentopomap.org/5/18/18.png",
+                "contrastColor": "#000000"
+            },
+            {
+                "item": {
+                    "id": "basemap-natural-earth-II",
+                    "name": "Natural Earth II",
+                    "type": "url-template-imagery",
+                    "url": "https://storage.googleapis.com/terria-datasets-public/basemaps/natural-earth-tiles/{z}/{x}/{reverseY}.png",
+                    "attribution": "<a href='https://www.naturalearthdata.com/downloads/10m-raster-data/10m-natural-earth-2/'>Natural Earth II</a> - From Natural Earth. <a href='https://www.naturalearthdata.com/about/terms-of-use/'>Public Domain</a>.",
+                    "maximumLevel": 7,
+                    "opacity": 1.0
+                },
+                "image": "build/TerriaJS/images/natural-earth.png",
+                "contrastColor": "#000000"
+            }
+        ]
+    }
+}

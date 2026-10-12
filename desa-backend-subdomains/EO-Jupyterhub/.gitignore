@@ -1,0 +1,15 @@
+# Secrets — never commit real credentials. Use .env.example as the template.
+.env
+
+# Local Claude Code settings
+.claude/
+
+# Local runtime / bind-mount data
+mnt/
+
+# Logs and build artifacts
+*.log
+
+# Python
+__pycache__/
+*.pyc
